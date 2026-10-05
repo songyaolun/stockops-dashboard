@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StockOps 每日研究工作台</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../_assets/e40b5d3f2c12a1c40b1dcd6d8aa198c5039940e1fe9470e7ea46b9d64bd3e7a9.css">
+  <script src="../../_assets/de49082f0591a7da552fecf30aa135ea64230ffa24e23ef4c85efce8e0e64588.js"></script>
+<script src="../../_assets/262cb585d2ab0bcef23209c13b7bbd750c0fd15c2ee0b1ba5d903cc5a959c2c5.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="brand-mark" aria-hidden="true">↗</div>
+      <div>
+        <div class="brand-line">
+          <strong>StockOps</strong>
+          <span id="task-type" class="task-badge">DAILY</span>
+        </div>
+        <div id="run-meta" class="run-meta">正在读取运行信息…</div>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <div id="source-popover" class="source-popover">
+        <button id="source-summary" class="source-summary" type="button"
+                aria-describedby="source-tooltip" aria-expanded="false">
+          <span id="source-health-dot" class="health-dot"></span>
+          <span>
+            <strong id="source-health-label">数据源检查中</strong>
+            <small id="source-health-count">— / — SOURCES</small>
+          </span>
+        </button>
+        <div id="source-tooltip" class="source-tooltip" role="tooltip">
+          <div class="tooltip-title">
+            <strong>数据源明细</strong>
+            <span id="source-tooltip-total">—</span>
+          </div>
+          <div id="source-tooltip-list" class="source-tooltip-list"></div>
+        </div>
+      </div>
+      <a class="archive-button" href="stock-analysis.html">个股研究</a>
+      <a class="archive-button" data-business-link="market_intelligence" href="#">板块热图</a>
+      <a class="archive-button" href="#history-panel">历史报告</a>
+    </div>
+  </header>
+
+  <nav class="system-navigation" aria-label="StockOps 全局导航">
+    <div class="workspace-tabs" aria-label="StockOps 工作区">
+      <button type="button" data-workspace="research" aria-pressed="true">每日研究</button>
+      <button type="button" data-workspace="candidates" aria-pressed="false">候选池</button>
+      <button type="button" data-workspace="watchlist" aria-pressed="false">
+        自选股
+        <span id="watchlist-nav-count">0</span>
+      </button>
+    </div>
+    <div class="stage-tabs" aria-label="StockOps 运行阶段">
+      <span>交易时段</span>
+      <a data-stage-link="premarket" href="#">盘前 08:30</a>
+      <a data-stage-link="midday" href="#">盘中 09:30–15:00</a>
+      <a data-stage-link="postmarket" href="#">盘后 16:00</a>
+      <a class="risk-tool-link" data-business-link="risk" href="#">风险识别</a>
+      <a class="home-link" data-home-link href="#">总览</a>
+    </div>
+  </nav>
+
+  <section id="ranking-identity-warning" class="stage-alert"
+           role="alert" hidden>
+    <span aria-hidden="true">!</span>
+    <p id="ranking-identity-warning-text">排名快照身份不匹配。</p>
+  </section>
+
+  <main id="stage-workspace" class="stage-workspace workspace-view">
+    <section class="stage-hero">
+      <div>
+        <small id="stage-eyebrow">STAGE</small>
+        <h1 id="stage-question">正在读取本阶段主问题…</h1>
+        <p id="stage-focus-detail">正在读取阶段结论…</p>
+      </div>
+      <div class="stage-focus">
+        <span>本阶段焦点</span>
+        <strong id="stage-focus-title">—</strong>
+        <small id="stage-ai-status">—</small>
+      </div>
+    </section>
+
+    <section id="market-risk-monitor" class="market-risk-monitor"
+             aria-labelledby="market-risk-title" hidden>
+      <header class="market-risk-heading">
+        <div>
+          <small>MARKET RISK OBSERVER</small>
+          <h2 id="market-risk-title">大盘风险观察</h2>
+        </div>
+        <span id="market-risk-role">—</span>
+      </header>
+      <div class="market-risk-grid">
+        <article class="market-risk-state">
+          <span>当前状态</span>
+          <strong id="market-risk-state">—</strong>
+          <small id="market-risk-as-of">—</small>
+        </article>
+        <article class="market-risk-detail">
+          <span>支持证据</span>
+          <div id="market-risk-supporting" class="market-risk-evidence"></div>
+        </article>
+        <article class="market-risk-detail">
+          <span>反证与缺口</span>
+          <div id="market-risk-opposing" class="market-risk-evidence"></div>
+        </article>
+        <article class="market-risk-transition">
+          <span>状态变化</span>
+          <strong id="market-risk-transition">—</strong>
+          <small id="market-risk-notification">—</small>
+        </article>
+      </div>
+      <footer>
+        <p id="market-risk-reason">—</p>
+        <small id="market-risk-disclaimer">仅用于风险观察与复盘，不构成投资建议。</small>
+      </footer>
+    </section>
+
+    <section id="stage-metrics" class="stage-metrics" aria-label="阶段指标"></section>
+
+    <section id="market-workflow" class="market-workflow"
+             aria-labelledby="market-workflow-title">
+      <header class="workflow-heading">
+        <div>
+          <small>MARKET WORKFLOW SNAPSHOT</small>
+          <h2 id="market-workflow-title">市场 · 板块 · 验证状态</h2>
+          <p id="workflow-timestamp">正在读取冻结时点…</p>
+        </div>
+        <strong id="workflow-quality" class="workflow-quality">未接入</strong>
+      </header>
+      <p id="workflow-status" class="workflow-status" role="status"></p>
+      <div class="workflow-evidence-grid">
+        <article>
+          <small>MARKET STATE</small>
+          <h3>市场状态</h3>
+          <strong id="workflow-market-state">—</strong>
+          <div id="workflow-market-evidence" class="workflow-evidence-list"></div>
+        </article>
+        <article>
+          <small>SECTOR STATE</small>
+          <h3>板块状态</h3>
+          <strong id="workflow-sector-summary">—</strong>
+          <div id="workflow-sector-list" class="workflow-state-list"></div>
+        </article>
+        <article>
+          <small>OPENING VALIDATION</small>
+          <h3 id="workflow-validation-title">早盘验证计划</h3>
+          <strong id="workflow-validation-summary">—</strong>
+          <div id="workflow-validation-list" class="workflow-state-list"></div>
+        </article>
+      </div>
+      <section id="workflow-postmarket-panel" class="workflow-postmarket-panel" hidden>
+        <article>
+          <small>POSTMARKET ATTRIBUTION</small>
+          <h3>收盘归因</h3>
+          <div id="workflow-attribution-list" class="workflow-evidence-list"></div>
+        </article>
+        <article>
+          <small>LEADERSHIP LADDER</small>
+          <h3>龙头梯队</h3>
+          <div id="workflow-leadership-list" class="workflow-state-list"></div>
+        </article>
+      </section>
+      <section id="workflow-checkpoint-panel" class="workflow-checkpoint-panel" hidden>
+        <header>
+          <strong>盘中检查点</strong>
+          <span>09:30–14:30 每半小时 · 15:00 进入收盘边界</span>
+        </header>
+        <div id="workflow-checkpoints" class="workflow-checkpoints"></div>
+      </section>
+      <footer id="workflow-boundary" class="workflow-boundary">
+        生命周期快照不可用；页面不会从旧指标或当前时间推断状态。
+      </footer>
+    </section>
+
+    <section class="stage-action-grid">
+      <article class="stage-action-panel">
+        <div class="stage-panel-heading">
+          <small>PRIMARY</small>
+          <h2 id="stage-primary-label">本阶段处理顺序</h2>
+        </div>
+        <div id="stage-primary-items" class="stage-item-list"></div>
+      </article>
+      <article class="stage-action-panel is-secondary">
+        <div class="stage-panel-heading">
+          <small>SECONDARY</small>
+          <h2 id="stage-secondary-label">继续观察</h2>
+        </div>
+        <div id="stage-secondary-items" class="stage-item-list"></div>
+      </article>
+    </section>
+
+    <section class="stage-alert">
+      <span aria-hidden="true">!</span>
+      <p id="stage-alert">正在读取本阶段边界…</p>
+      <button type="button" data-stage-deep-link="research">进入深度研究 →</button>
+    </section>
+  </main>
+
+  <main id="research-workspace" class="workspace-view" hidden>
+    <section class="intro">
+      <div>
+        <h1>每日研究工作台</h1>
+        <p>把筛选信号、价格结构与 AI 研判放在同一条决策链上</p>
+      </div>
+      <span id="last-updated" class="last-updated"></span>
+    </section>
+
+    <section id="midday-research-status" class="midday-status-band" hidden
+             aria-label="盘中数据与风险姿态">
+      <article>
+        <span>下午风险姿态</span>
+        <strong id="midday-posture">—</strong>
+        <small id="midday-posture-note">正在读取盘中状态…</small>
+      </article>
+      <article>
+        <span>宽市场</span>
+        <strong id="midday-market-coverage">—</strong>
+        <small id="midday-market-note">—</small>
+      </article>
+      <article>
+        <span>主要指数</span>
+        <strong id="midday-index-coverage">—</strong>
+        <small id="midday-index-note">—</small>
+      </article>
+    </section>
+
+    <section class="metrics" aria-label="本次研究概览">
+      <article><span>完整筛选</span><strong id="metric-candidates">0</strong><small id="metric-ai-focus">AI 深度分析 0 只</small></article>
+      <article><span>策略命中</span><strong id="metric-hits">0</strong><small id="metric-watchlist">0 只为自选股</small></article>
+      <article><span id="metric-score-label">首名生产排名分</span><strong id="metric-score" class="accent-text">—</strong><small id="metric-score-stock">暂无候选</small></article>
+      <article><span>1 日收涨</span><strong id="metric-advancers">—</strong><small>基于可用日 K</small></article>
+    </section>
+
+    <section class="ai-brief">
+      <div class="ai-brief-label"><strong>✦ AI BRIEF</strong><small id="engine-meta"></small></div>
+      <div>
+        <h2>本次市场摘要</h2>
+        <p id="ai-summary">暂无 AI 市场摘要。</p>
+      </div>
+    </section>
+
+    <section class="board-market" aria-labelledby="board-market-title">
+      <div class="board-market-heading">
+        <div>
+          <small>BOARD RESEARCH · PRICE & CAPITAL</small>
+          <h2 id="board-market-title">板块研究</h2>
+          <p>榜单、时间轴、详情与热图共享分类、搜索、周期与所选板块；周期数值由后端快照提供。</p>
+        </div>
+        <div class="board-market-summary">
+          <span id="board-complete-count">有详情 0</span>
+          <span id="board-advance-count">上涨 0</span>
+          <strong id="board-decline-count">下跌 0</strong>
+        </div>
+      </div>
+      <p id="board-data-status" class="board-data-status" role="status">
+        正在读取板块数据…
+      </p>
+      <div class="board-radar-controls">
+        <div class="board-view-tabs" role="group" aria-label="板块视图">
+          <button type="button" data-board-view="list" aria-pressed="true">榜单</button>
+          <button type="button" data-board-view="heatmap" aria-pressed="false">热图</button>
+        </div>
+        <label class="board-control-select">
+          <span>分类</span>
+          <select id="board-classification-select" aria-label="板块分类">
+            <option value="ths">同花顺行业/概念</option>
+            <option value="sw_l1">申万一级</option>
+            <option value="sw_l2">申万二级</option>
+          </select>
+        </label>
+        <label class="board-control-select">
+          <span>排序</span>
+          <select id="board-sort-select" aria-label="排序指标">
+            <option value="return_pct">周期涨幅</option>
+            <option value="net_inflow">净流入</option>
+            <option value="verified_main_net_inflow">主力净流入</option>
+            <option value="net_inflow_to_amount_pct">净流入占成交额</option>
+            <option value="main_net_inflow_to_amount_pct">主力净额占成交额</option>
+            <option value="gross_inflow_to_amount_pct">买入额占成交额</option>
+            <option value="main_buy_share_pct">主力买入占比</option>
+            <option value="trading_crowding">拥挤度（申万同级）</option>
+          </select>
+        </label>
+        <div class="board-filter-group" role="group" aria-label="筛选详情完整性">
+          <span>周期</span>
+          <button type="button" data-board-completeness="all" aria-pressed="true">全部</button>
+          <button type="button" data-board-completeness="complete" aria-pressed="false">有周期</button>
+          <button type="button" data-board-completeness="market_only" aria-pressed="false">待补数</button>
+        </div>
+        <div class="board-filter-group" role="group" aria-label="筛选板块类型">
+          <span>类型</span>
+          <button type="button" data-board-taxonomy-filter="all" aria-pressed="true">全部</button>
+          <button type="button" data-board-taxonomy-filter="industry" aria-pressed="false">行业</button>
+          <button type="button" data-board-taxonomy-filter="concept" aria-pressed="false">概念</button>
+        </div>
+        <div class="board-filter-group" role="group" aria-label="选择趋势窗口">
+          <span>时间</span>
+          <button type="button" data-board-window="20d" aria-pressed="true">20 日</button>
+          <button type="button" data-board-window="60d" aria-pressed="false">60 日</button>
+        </div>
+        <label class="board-radar-search">
+          <span class="sr-only">搜索板块</span>
+          <input id="board-radar-search" type="search" placeholder="搜索名称或代码" autocomplete="off">
+        </label>
+      </div>
+      <div id="board-radar-controls-heatmap" class="board-heatmap-controls" hidden>
+        <label class="board-control-select">
+          <span>热图指标</span>
+          <select id="board-heatmap-metric-select" aria-label="热图指标"></select>
+        </label>
+        <span id="board-heatmap-view-note" class="board-heatmap-note" hidden>
+          热图与榜单共享分类、搜索、周期与所选板块；单元格标注单位与样本成熟度。
+        </span>
+      </div>
+      <div id="board-mobile-tabs" class="board-mobile-tabs" role="tablist" aria-label="市场雷达视图">
+        <button type="button" role="tab" data-board-mobile-view="list" aria-selected="true">列表</button>
+        <button type="button" role="tab" data-board-mobile-view="detail" aria-selected="false">详情</button>
+      </div>
+      <div class="board-radar-layout" id="board-radar-layout">
+        <article class="board-radar-list-panel" id="board-radar-list-panel" data-board-mobile-panel="list">
+          <header>
+            <strong id="board-visible-count">0 个板块</strong>
+            <span id="board-taxonomy-summary">行业 0 · 概念 0</span>
+          </header>
+          <div class="board-radar-columns" role="group" aria-label="榜单列，点按查看完整解释">
+            <span>板块 · 状态</span>
+            <button type="button" class="board-column-help" data-board-column="day" aria-expanded="false" aria-controls="board-column-note">昨日</button>
+            <button type="button" class="board-column-help" id="board-period-column" data-board-column="period" aria-expanded="false" aria-controls="board-column-note">20 日涨幅 ↓</button>
+            <button type="button" class="board-column-help" id="board-sort-column" data-board-column="sort" aria-expanded="false" aria-controls="board-column-note" hidden>排序值</button>
+          </div>
+          <p id="board-column-note" class="board-column-note" role="status" hidden></p>
+          <div id="board-radar-list" class="board-radar-list" role="listbox" aria-label="板块榜单"></div>
+        </article>
+        <article class="board-timeline-panel" aria-labelledby="board-timeline-title">
+          <header>
+            <div>
+              <strong id="board-timeline-title">日涨跌点阵与资金</strong>
+              <small>红点上涨、绿点下跌；下轨口径由资金切换按钮决定，缺失留空</small>
+              <div class="board-flow-toggle" role="group" aria-label="时间轴资金口径">
+                <button type="button" data-board-flow="net_inflow" aria-pressed="true">净流入</button>
+                <button type="button" data-board-flow="verified_main_net_inflow" aria-pressed="false">主力净流入</button>
+              </div>
+            </div>
+            <span id="board-timeline-summary">等待历史数据</span>
+          </header>
+          <div id="board-timeline-axis" class="board-timeline-axis" aria-hidden="true"></div>
+          <div id="board-timeline" class="board-timeline"></div>
+        </article>
+        <aside class="board-detail-panel" data-board-mobile-panel="detail" aria-live="polite">
+          <button id="board-detail-back" class="board-detail-back" type="button">← 返回板块列表</button>
+          <div id="board-detail"></div>
+        </aside>
+      </div>
+      <div id="board-heatmap" class="board-heatmap-panel" hidden></div>
+      <footer class="board-radar-footer">
+        <span id="board-radar-coverage">行业与概念混排</span>
+        <span id="board-sort-note">排序按选中周期与指标降序 · 缺失排末尾</span>
+        <span>缺失值留空，不按零处理；净额与主力净流入是不同概念</span>
+      </footer>
+    </section>
+
+    <section id="candidate-comparison" class="candidate-comparison" aria-labelledby="comparison-title">
+      <div class="comparison-heading">
+        <div>
+          <h2 id="comparison-title">↕ 榜单变动</h2>
+          <small id="comparison-subtitle">正在读取同任务历史榜单…</small>
+        </div>
+        <div class="comparison-periods" role="group" aria-label="选择榜单对比周期">
+          <button type="button" data-comparison-period="previous" aria-pressed="true">昨日</button>
+          <button type="button" data-comparison-period="week" aria-pressed="false">近一周</button>
+        </div>
+      </div>
+      <div id="comparison-empty" class="comparison-empty" hidden></div>
+      <div id="comparison-content" class="comparison-content">
+        <div class="comparison-summary">
+          <div class="comparison-metrics" role="group" aria-label="榜单变动概览">
+            <button type="button" data-comparison-filter="" aria-pressed="true">
+              <strong id="comparison-current-count">0</strong><span>今日在榜</span>
+            </button>
+            <button type="button" data-comparison-filter="entered" aria-pressed="false">
+              <strong id="comparison-entered-count" class="accent-text">0</strong><span>今日新进</span>
+            </button>
+            <div>
+              <strong id="comparison-exited-count" class="warning-text">0</strong><span>今日调出</span>
+            </div>
+            <button type="button" data-comparison-filter="retained" aria-pressed="false">
+              <strong id="comparison-retained-count">0</strong><span>连续在榜</span>
+            </button>
+          </div>
+          <div class="comparison-net">
+            <span id="comparison-net-label">净变化</span>
+            <strong id="comparison-net-change">0 只</strong>
+          </div>
+        </div>
+        <div class="comparison-lists">
+          <section class="comparison-list is-entered" aria-labelledby="comparison-entered-title">
+            <button class="comparison-list-heading" type="button"
+                    data-comparison-list-toggle="entered" aria-expanded="false">
+              <h3 id="comparison-entered-title">今日新进</h3>
+              <span id="comparison-entered-label">0 只</span>
+            </button>
+            <div id="comparison-entered-list" class="comparison-stock-list"></div>
+          </section>
+          <section class="comparison-list is-exited" aria-labelledby="comparison-exited-title">
+            <button class="comparison-list-heading" type="button"
+                    data-comparison-list-toggle="exited" aria-expanded="false">
+              <h3 id="comparison-exited-title">今日调出</h3>
+              <span id="comparison-exited-label">0 只</span>
+            </button>
+            <div id="comparison-exited-list" class="comparison-stock-list"
+                 role="region" tabindex="0" aria-label="今日调出股票列表"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="strategy-lane-board" aria-labelledby="strategy-lane-title">
+      <div class="lane-board-heading">
+        <div>
+          <small id="strategy-lane-eyebrow">EVIDENCE GROUPS</small>
+          <h2 id="strategy-lane-title">七类证券证据</h2>
+          <p id="strategy-lane-description">按公开证据分组，同一只股票可跨组命中；组内保持生产排名。</p>
+        </div>
+        <div class="lane-board-summary">
+          <span id="lane-count">7 类证据</span>
+          <strong id="lane-ai-summary">AI 0 只</strong>
+        </div>
+      </div>
+      <div id="strategy-lanes" class="strategy-lanes"></div>
+    </section>
+
+    <section id="history-panel" class="history-panel">
+      <div class="section-heading">
+        <div class="history-heading-text">
+          <h2>历史报告</h2>
+          <small id="history-scope">仅显示本时段的历史运行，按交易日汇总</small>
+        </div>
+        <div class="history-heading-actions">
+          <span id="history-count">0 天 · 0 次运行</span>
+          <button id="history-mobile-toggle" class="mobile-section-toggle" type="button"
+                  aria-expanded="false" aria-controls="history-days">展开</button>
+        </div>
+      </div>
+      <div id="history-days" class="history-days"></div>
+    </section>
+
+  </main>
+
+  <main id="candidate-workspace" class="workspace-view candidate-workspace" hidden>
+    <section class="candidate-intro">
+      <div>
+        <small>CANDIDATE POOL</small>
+        <h1>候选池</h1>
+        <p>按证据组、组合规则与风险筛选；所有筛选保持唯一生产排名，点击股票查看技术图。</p>
+      </div>
+      <span id="candidate-workspace-count">0 只候选</span>
+    </section>
+
+    <section id="ranking-summary" class="midday-status-band"
+             aria-label="生产排名快照" hidden>
+      <article><span>排序快照</span><strong id="ranking-snapshot-id">—</strong><small id="ranking-version">—</small></article>
+      <article><span>信号 / 截止</span><strong id="ranking-signal-date">—</strong><small id="ranking-as-of">—</small></article>
+      <article><span>准入</span><strong id="ranking-admission-counts">—</strong><small>allow / watch / reject</small></article>
+      <article><span>六家族独有新增</span><strong id="ranking-family-only-count">—</strong><small id="ranking-coverage">—</small></article>
+      <article><span>降级 / 最高风险</span><strong id="ranking-recall-status">—</strong><small id="ranking-highest-risk">—</small></article>
+    </section>
+
+    <section id="midday-candidate-status" class="midday-status-band" hidden
+             aria-label="盘中候选确认概览">
+      <article><span>昨日候选</span><strong id="midday-candidate-total">0</strong><small>原策略命中与评分完整保留</small></article>
+      <article><span>下午重点观察</span><strong id="midday-focus-count">0</strong><small>仅新鲜数据可升级</small></article>
+      <article><span>等待确认</span><strong id="midday-wait-count">0</strong><small>量价或主题共振不足</small></article>
+      <article><span>规则排除</span><strong id="midday-avoid-count">0</strong><small>至少一项排除阈值已触发</small></article>
+      <article><span>数据不足</span><strong id="midday-unavailable-count">0</strong><small>缺失或过期，不等于规则排除</small></article>
+    </section>
+
+    <section class="strategy-observer" aria-labelledby="strategy-observer-title">
+      <div class="strategy-observer-heading">
+        <div>
+          <h2 id="strategy-observer-title">精细筛选</h2>
+          <small id="strategy-filter-summary" aria-live="polite">全部候选</small>
+        </div>
+        <div class="strategy-heading-actions">
+          <div class="strategy-total"><span>策略 · 规则</span><strong id="strategy-total">0 · 0</strong></div>
+          <button id="strategy-mobile-toggle" class="mobile-section-toggle" type="button"
+                  aria-expanded="false" aria-controls="strategy-filter-content">展开</button>
+        </div>
+      </div>
+      <div id="strategy-filter-content">
+        <div class="observer-filter-band">
+          <span class="observer-filter-label">组合视图</span>
+          <div id="selection-rule-filters" class="strategy-filters rule-filters"
+               role="group" aria-label="按组合规则筛选候选股"></div>
+        </div>
+        <div class="observer-filter-band">
+          <span class="observer-filter-label">底层策略</span>
+          <div id="strategy-filters" class="strategy-filters"
+               role="group" aria-label="按命中策略筛选候选股"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="candidate-risk-filter" aria-labelledby="candidate-risk-filter-title">
+      <div>
+        <strong id="candidate-risk-filter-title">证券风险</strong>
+        <small>红色保留审计但不进入正式 AI；未知不等于安全。</small>
+      </div>
+      <div id="candidate-risk-filters" class="candidate-risk-filters"
+           role="group" aria-label="按证券风险等级筛选候选"></div>
+    </section>
+
+    <section class="research-workspace">
+      <aside class="candidate-panel">
+        <div class="panel-heading">
+          <div><h2>生产排名候选池</h2><small id="candidate-count">0 SYMBOLS</small></div>
+        </div>
+        <p id="sector-heat-reliability-note" class="sector-heat-reliability-note" hidden></p>
+        <div class="candidate-columns" aria-hidden="true"><span>股票</span><span>策略信号</span><span>全局名次 · 排名分</span></div>
+        <div id="candidate-list" class="candidate-list"></div>
+      </aside>
+
+      <section class="stock-panel" aria-live="polite">
+        <div class="stock-overview">
+          <div class="stock-identity">
+            <div><h2 id="stock-name">暂无数据</h2><span id="stock-code"></span> <a id="candidate-analysis-link" href="stock-analysis.html">分析这只股票 →</a></div>
+            <p id="stock-strategies">未选择候选股</p>
+          </div>
+          <dl class="quote-summary">
+            <div><dt>最新收盘</dt><dd id="latest-close">—</dd></div>
+            <div><dt>1 日涨跌幅</dt><dd id="change-1d">—</dd></div>
+            <div><dt>5 日涨跌幅</dt><dd id="change-5d">—</dd></div>
+            <div><dt>生产名次 · 排名分</dt><dd id="selected-score" class="accent-text">—</dd></div>
+          </dl>
+        </div>
+
+        <div class="chart-toolbar">
+          <span class="period-badge">日 K</span>
+          <div id="chart-filters">
+            <fieldset id="indicator-filters"><legend>主图指标</legend></fieldset>
+            <fieldset id="subchart-filters"><legend>副图指标</legend></fieldset>
+            <span id="event-note" class="event-note" hidden></span>
+            <details id="event-menu" class="event-menu" hidden>
+              <summary id="event-summary">事件节点</summary>
+              <fieldset id="event-filters"><legend>事件类型</legend></fieldset>
+            </details>
+          </div>
+        </div>
+        <div class="chart-stage">
+          <div id="chart" role="img" aria-label="所选股票日 K 线图"></div>
+          <p id="chart-status" class="chart-status" role="status" hidden></p>
+        </div>
+      </section>
+    </section>
+
+    <section id="candidate-security-risk-panel" class="candidate-security-risk-panel"
+             aria-label="所选候选的独立风险识别证据">
+      <p class="company-panel-empty">选择候选股后显示独立风险识别结论。</p>
+    </section>
+
+    <section id="candidate-company-panel" class="company-decision-panel"
+             aria-label="所选候选公司的质量、估值、事件与风险">
+      <p class="company-panel-empty">选择候选股后显示公司质量与事件风险。</p>
+    </section>
+
+    <section id="candidate-leadership-panel" class="leadership-evidence-panel"
+             aria-label="所选候选股的板块龙头与非对称强度研究证据（仅供参考，不影响排序）">
+      <p class="leadership-panel-empty">选择候选股后显示龙头与相对强度研究证据。</p>
+    </section>
+
+    <section class="lower-grid">
+      <article class="opinion-panel">
+        <div class="opinion-lead">
+          <small>AI OPINION</small>
+          <h2>个股研究观点</h2>
+          <span>RISK FIRST</span>
+        </div>
+        <p id="stock-opinion">选择候选股后显示对应的 AI 观点。</p>
+      </article>
+
+      <section id="source-panel" class="source-panel">
+        <div class="section-heading"><h2>数据质量</h2><span id="source-panel-summary">—</span></div>
+        <div id="source-status" class="source-status"></div>
+      </section>
+    </section>
+  </main>
+
+  <main id="watchlist-workspace" class="workspace-view watchlist-workspace" hidden>
+    <section class="watchlist-intro">
+      <div>
+        <small>WATCHLIST DESK</small>
+        <h1>自选股</h1>
+        <p>持续跟踪主动关注的股票，并与本次策略候选共用技术图和公司事实。</p>
+      </div>
+    </section>
+
+    <section class="watchlist-main-grid">
+      <section class="replacement-panel" aria-labelledby="watchlist-title">
+          <div class="watchlist-section-heading">
+            <div>
+              <small>WATCHLIST</small>
+              <h2 id="watchlist-title">自选股列表</h2>
+            </div>
+            <span id="watchlist-count">0 只</span>
+          </div>
+          <label class="watchlist-search">
+            <span>搜索自选股</span>
+            <input id="watchlist-search-input" type="search"
+                   placeholder="输入名称或代码" autocomplete="off">
+          </label>
+          <div id="watchlist-list" class="replacement-list"></div>
+      </section>
+
+      <section class="replacement-panel" aria-labelledby="candidate-replacement-title">
+          <div class="watchlist-section-heading">
+            <div>
+              <small>CANDIDATE POOL</small>
+              <h2 id="candidate-replacement-title">策略候选</h2>
+            </div>
+            <span>仅供研究</span>
+          </div>
+          <div id="replacement-list" class="replacement-list"></div>
+      </section>
+    </section>
+
+    <section class="watchlist-chart-panel" aria-labelledby="watchlist-chart-title">
+      <div class="watchlist-chart-overview">
+        <div>
+          <small>TECHNICAL VIEW</small>
+          <h2 id="watchlist-chart-title">自选股技术图表</h2>
+          <p id="watchlist-chart-identity">点击自选股或策略候选查看 K 线。</p>
+          <a id="watchlist-analysis-link" href="stock-analysis.html">分析这只股票 →</a>
+        </div>
+        <dl>
+          <div><dt>最新收盘</dt><dd id="watchlist-chart-close">—</dd></div>
+          <div><dt>1 日涨跌幅</dt><dd id="watchlist-chart-change-1d">—</dd></div>
+          <div><dt>5 日涨跌幅</dt><dd id="watchlist-chart-change-5d">—</dd></div>
+        </dl>
+      </div>
+      <div class="watchlist-chart-toolbar">
+        <span>日 K · 前复权技术图</span>
+        <div id="watchlist-range-filters" class="watchlist-range-filters"
+             role="group" aria-label="选择自选股图时间范围">
+          <button type="button" data-watchlist-range="3m" aria-pressed="true">3月</button>
+          <button type="button" data-watchlist-range="1y" aria-pressed="false">1年</button>
+          <button type="button" data-watchlist-range="all" aria-pressed="false">全部</button>
+        </div>
+        <fieldset id="watchlist-main-indicators">
+          <legend>主图指标</legend>
+        </fieldset>
+        <fieldset id="watchlist-sub-indicators">
+          <legend>副图指标</legend>
+        </fieldset>
+        <details id="watchlist-event-menu" hidden>
+          <summary id="watchlist-event-summary">事件节点</summary>
+          <fieldset id="watchlist-event-filters">
+            <legend>事件类型</legend>
+          </fieldset>
+        </details>
+      </div>
+      <div class="watchlist-chart-stage">
+        <div id="watchlist-chart" role="img" aria-label="自选股日 K 线图"></div>
+        <p id="watchlist-chart-status" role="status">请选择股票。</p>
+      </div>
+      <p class="watchlist-chart-note">K 线和技术指标使用前复权历史，仅供研究。</p>
+    </section>
+
+    <section id="watchlist-company-panel" class="company-decision-panel"
+             aria-label="所选自选公司的质量、估值、事件与风险">
+      <p class="company-panel-empty">选择自选股或策略候选后显示公司质量与事件风险。</p>
+    </section>
+
+    <p class="watchlist-disclaimer">
+      自选股用于持续研究；页面不读取账户持仓，不自动交易，也不构成投资建议。
+    </p>
+  </main>
+
+  <footer>研究辅助，不构成投资建议。</footer>
+
+  <script src="data-parts/000000-7d64695e1c670901c04defe70a875a278ee9c2930744f7c5de8a71b0f319b1ac.js"></script><script src="data-parts/000001-3c3fc4159d7e659e0ca9c71c1833f6265b2fcccb0cacdfefedbdfe29bb51c961.js"></script><script src="data-parts/000002-1b1702399b658972a7f59c8f5ef988358618986bf71e20781a3fa9c130037392.js"></script><script src="data-parts/000003-ca722c9f0840c565e215e1c110fea0143b52dba29fc7e13cf328e4ed67c1f320.js"></script><script src="data-parts/000004-694b7a999afa4444512fca03330d15c568b7ae6454112ac1c9965a37e6be1e4e.js"></script><script src="data-parts/000005-ad125f00d7614c9a157e659a96b773f8827362a6884cef2a76d9d1ee29e8bed0.js"></script><script src="data-parts/000006-3b962397a9ae77a7d0acc5b9a63377482da5d31d6fb963807ac310ab423d7762.js"></script><script src="data-parts/000007-694229b130f4343b409050c875c4e3459263f51a763324cee262bebe9f770dd1.js"></script><script src="data-parts/000008-207409506c44fa6c28e40ea20fd82385d83ad36428f55593ecd1555e0a21d378.js"></script><script src="data-parts/000009-34c2d1cad8c459c60ebc763c358e646003bc6f268db14818787edd557b3c10bd.js"></script><script src="data-parts/000010-e0b9f687b328cbc312c26c31388599adc9a63c2dc1cae6966daeef1100895d69.js"></script><script src="data-parts/000011-514135fed9b3e50f4ada84f2af62fcff83597b807b8ea1089f57838d5166d2c0.js"></script><script src="data-parts/000012-46ab65751f0d8d4b1b4291ac8aedad146391c18d08e827046c082f68759b62f1.js"></script><script src="data-parts/000013-1fd21a383c87ad946060c440e0bcf12a52be5e809f012ab0fed9fda0d968c088.js"></script><script src="data-parts/000014-ae8f5112567eeb14a6965d86093dba56add9010d40de7868de08d8b0a2b328e9.js"></script><script src="data-parts/000015-00c59614264a05295d519ad741b03123cc6555d156209a3d44c678effe7dab20.js"></script><script src="data-parts/000016-0a217590dc11a0963ce88bb3a6bae2cd9a74f917fe9df26d528fe8620bf6bb12.js"></script><script src="data-parts/000017-636a4ffb8381401620152aa1286c6d5b19bc5a895f09e19fbdb375024474f9cb.js"></script><script src="data-parts/000018-54d85d118fc8e6ee54c351dfa9b590f35b3d02dfe1108401a799adc7c0f01cad.js"></script><script src="data-parts/000019-ab962f22b1aa2a4542851ed8f6217539f4c48a9d42070d657bd78c875990fdc8.js"></script><script src="data-parts/000020-b93722802845e59f899476aaeadeadb3476b16edbc3dedec13ca1ab45bd5e627.js"></script><script src="data-parts/000021-a20c36691199549ddfe2d688d62c4d1b7b722793f15550a045499b4bb7d89b27.js"></script><script src="data-parts/000022-dd1b4b8b367b429d4780985eed7031775ef301dfa4eb385d382ac3a82548abce.js"></script><script src="data-parts/000023-04cf3e55c877de9900ca741e750dff999073b04bfb5c92e002e0d29eccf0e7e4.js"></script><script src="data-parts/000024-1d0f9dba8a02a1002c3a6afabfe1e81b1406327f7287b852bd0200002f24c421.js"></script><script src="data-parts/000025-3fcd1627c5c43d2e672fb0031a3de14d6d212f61f14c2838483927e098119c93.js"></script><script src="data-parts/000026-2250403578cdb353352e238a41f411d060957556ffaa18dab66fc8774984abb0.js"></script><script src="data-parts/000027-29a17decf7028904103ce5c0853df21eeae00316c6be9e49f57f5071c7ec904a.js"></script><script src="data-parts/000028-b0a33a5d2aa032b4ad3082b036abb48376b59ea70a1d1880de89fc5b47cd73e1.js"></script><script src="data-parts/000029-4ba5cb650e20a7aa21f9f22867139bf9c41625eae3d3720836dea1205820681f.js"></script><script src="data-parts/000030-2b65aa21a44ecc625acecb46b113049053fb7d7b40717ee03c2bac5ee0880032.js"></script><script src="data-parts/000031-8a71bae04db5b57d0ee69a446044ca30fdb83865c0ba3c6bc51ea5e0d73f439b.js"></script><script src="data-parts/000032-94bd387ebf3104ecea43d436a502771401a5e6eac3e9ef54cb48445285b58389.js"></script><script src="data-parts/000033-b1d2d6d3b2adf605e87b0cca34e1b497702176854c26db05eb0bfd72764ec155.js"></script><script src="data-parts/000034-ad45245aa9e9a56e9bd5fd2ab999ce3bbfc3ff0561a89988778404855f9af158.js"></script><script src="data-parts/000035-d4c2af182e4370f367067d5858a8d9df33ad2e315338cf6c00811ee58077e734.js"></script><script src="data-parts/000036-83be514a4e9c2177b8377304e4707a0dc6c7a1b24102b1027cf6646fb706b8c7.js"></script><script src="data-parts/000037-1eca09490241525f964a3082cbd35e25ab54e4d739c0b008f2d9624fcb564a26.js"></script><script src="data-parts/000038-b7bc033a21f52625b8e283aca02607843ff240c40e06506e0c5026e593855c76.js"></script><script src="data-parts/000039-919f4b45b0ebba003c60d5defc4bc8541e12da045bd659a56b8eae78c990d6bd.js"></script><script src="data-parts/000040-d87c3550c02f7798ad8329c38a82ee17be3090106aaf0ab7690347f808dcaddb.js"></script><script src="data-parts/000041-39d770788e381a283092bbf737b79d713ee9db33e5a38edbeb0eadbfa03e1947.js"></script><script src="data-parts/000042-737276db55143ef78de9b55de1e4606698efd9bf845ca918cbf000e1253fa62c.js"></script><script src="data-parts/000043-27cea9773f128fdf316b4ab6b5400ca253a5523a67533305e9173ee3732d6191.js"></script><script src="data-parts/000044-6fa619de3dfadf868411f1add6719190e66699ce9809063184fdfeb24574de54.js"></script><script src="data-parts/000045-a1045a35d8aeb48ba690d757925033c0cb241d149d391c4cf314d6cf680d5979.js"></script><script src="data-parts/000046-b4012810ff69df087b1c6f38584c2877caf6ebea413f3f10929dae92214d103f.js"></script><script src="data-parts/000047-0edaf054ab563a895c547319fcba0f296f0a2398a0cc25020f98ea1ee83abe1f.js"></script><script src="data-parts/000048-3611e6d151aced0c14017594fcad4ea5d3f8c558433b9d509519fa1cdd7c51ea.js"></script><script src="data-parts/000049-fe674eb8f049b2320e2e6d84a638ab59342d7368ab288fc10dd9bd1701fa9bdb.js"></script><script src="data-parts/000050-21a11ba77e2460f623403660d9917e373a030dba90edd8ae113bae13a4f0d6a9.js"></script><script src="data-parts/000051-4fc448d2612779dbb1e9f94fea808c0fa8f32b0e9f800d089c90d4c5e0c19ca1.js"></script><script src="data-parts/000052-c05dbb549eb4aebb26507404b28d94301584808904214dd6abfb982880180477.js"></script><script src="data-parts/000053-af9e7e29195a53025d8a73e6561517babf66db96980dfd71aa867bd3b46aada3.js"></script><script src="data-parts/000054-49cd7ef833b067741b93cf1d6ea3f7c43f37242bd8bd5d5761f40bb7aee8dbf2.js"></script><script src="data-parts/000055-c287c8f687d907b2624c9682b018515592beb7ff03ffd92274ce80e84e040323.js"></script><script src="data-parts/000056-aac5cb18950858b4dda58b95cd5f68f604dfb1704aac54492d2596993743a06b.js"></script><script src="data-parts/000057-b46d9cecb89b396bc1e198632e01c6218b8be32797ea88722d4fc92db5b6c640.js"></script><script src="data-parts/000058-8999fcb4bc1f4f3c648136103c262ad23f121ee121154735f32546c8bc762aa5.js"></script><script src="data-parts/000059-a8dd8e421c331f7db8a97a520e632592813c9853341acbada2d8642196b7985d.js"></script><script src="data-parts/000060-cd1327b6aa268a3073ede89e1e889039d582e141bed9176207ec120b4ee2f578.js"></script><script src="data-parts/000061-aed6c213b4e2937d87cb70bc696897db6c077ada955e76daabebd5a3c13e3d41.js"></script><script src="data-parts/000062-d5ef4a4eb86cb6a9c136c717f7cebb2548ddc7865ec218f2230c06887e370c5c.js"></script><script src="data-parts/000063-1992c49754ca5e17c92dffd67ae0cd60603537e56b61abc67f8ca34d3da59104.js"></script><script src="data-parts/000064-48dc8a358488e5c98fa0ac2cbe8c91a9646cbc44007c424fd9719cf41d1ccfcd.js"></script><script src="data-parts/000065-6982eb749b948ae2ed9ed5ca35617485c97800fd203af431379a373ecc66e402.js"></script><script src="data-parts/000066-ff9e1a239c292811ba608ce8883d0bb9983706d9f2189d0009e7ae5930ea8031.js"></script><script src="data-parts/000067-812f16ea7d69ff596df32b044758fe73ae95885a6a111aa5621dfea1131a397e.js"></script><script src="data-parts/000068-ef69a1666c5fb4df2deaaecf04a5b00a3e2f1d3b831ea871537720cbaaa3ac40.js"></script><script src="data-parts/000069-3f94f07391a8924143ab0837285c3a2e01da23525bca99633fd516f41ab2fb98.js"></script><script src="data-parts/000070-65b1efe3044c1751061c4fd880414eac676a965a1be4fb2ae28a0626c033c4ee.js"></script><script src="data-parts/000071-9e821a4f4a70ef746d07cf0b9c080dce9382fc4921b9120bb441761d0c989282.js"></script><script src="data-parts/000072-bd46228d840e5341d73d752bccf2c6e2eaee4f1beee3a58620707707374ce08e.js"></script><script src="data-parts/000073-ef3c61cf6e775b4bcebbf71f8b9ddce907a89b82bc2a86fd8be0f95651a1834b.js"></script><script src="data-parts/000074-e4beb378e50b78745ec8e1ca9d0246f6bf3aab0d42f0b5abb5329b1d59b6b190.js"></script><script src="data-parts/000075-06d27b2d2d1f1abce06ad9cba991ead70e38a5558c96f2644d693ff0f8250d2f.js"></script><script src="data-parts/000076-13dd6dff36b07743911195b3f9a9ef7b32b9d1dccca17bd7b79a81ea80bd024d.js"></script><script src="data-parts/000077-9a98d7723abfd42e04f409b17f60ad1431f20963dbf9744ba0a81dd41c1dfd86.js"></script><script src="data-parts/000078-c346b281b10cd538313c91a5aea9426721b7c3fec4ae34c915b7ccca17aee875.js"></script><script src="data-parts/000079-569cd2213d4f83c91f1fa7a5eaa08366dedc59d861c439b3199f27e0193a3172.js"></script><script src="data-parts/000080-5542786a8ca1c1ca7072b6f0b3baf5cbec70a674d65844e2e4d474961e6550f5.js"></script><script src="data-parts/000081-e2de43b49811a84a3b1282193a5544e4b3034dfee0a35289fbf5e609159872a5.js"></script><script src="data-parts/000082-14ae98874f8bd8b622ec74e863dc6918ca218fb56b619467704b61d3c77063ee.js"></script><script src="data-parts/000083-c614edde46ef1262d4a8808e89554b9b75ae7f23fed600dcf6140ee42a867431.js"></script><script src="data-parts/000084-56c3bcca64c549be97388af80ca42b9146d272395e13adb369361cefefba034f.js"></script><script src="data-parts/000085-399610c6b714a1d6af5cc834aee8b486f001e9341e5178a62887d4da1535d395.js"></script><script src="data-parts/000086-20af68899c3d77060c7dfe48899b9887ff417cc6d3a139cd7c46801c495c6982.js"></script><script src="data-parts/000087-3bbfe564ea2cbefe413409daf391b059cf54aab2c9b4fc56a34b127d3aa49f90.js"></script><script src="data-parts/000088-12e89fc20b7a0bdd1715a37e497abbcedad2c24913b2ce85360b654066bf8187.js"></script><script src="data-parts/000089-d9dce4c845fec81395bcf0759c6cbe1f0fc18b3909f670e44c8aad052394183d.js"></script><script src="data-parts/000090-a6bc9a65e43b77b21d15972ed1baa42cc89c793332a651863ccea5f82418b6c9.js"></script><script src="data-parts/000091-211e3ece88904eb7358b3b3b6c7fa4ab6bb290cc1c5f609bf7a46cd49ffe0b13.js"></script><script src="data-parts/000092-be52b603d2343d9b7709eba8fdef36735a436e7d2337f8e15a5d37a80615aaa8.js"></script><script src="data-parts/000093-1a0887b571a196ab338e314df240fb618fc60f4eae3ef3c1479bee8b86d269a5.js"></script><script src="data-parts/000094-c556ff90e9a9bd4131197d7e207026a494582b075ea693d3a17af11ed7338d64.js"></script><script src="data-parts/000095-ea5f83bf8e83612129646e34e3de4442ee5e4885837f4454961791ba49486385.js"></script><script src="data-parts/000096-ff84091a1ff0fd701bfef556132c2b3b956d3837e6d3a85e1db6fb6e56b320fb.js"></script><script src="data-parts/000097-565dd4e6c370dbb5235aa1c7802b735f9a82dda13c47790b188c23cd7eba4d90.js"></script><script src="data-parts/000098-77bf0251a5b89afa054362214bb8dc06ac87c0b05003ae5329c0a2ecd15a82c8.js"></script><script src="data-parts/000099-31c6e25fb49775f55de9f17af44ba76f568483ea3c74005aa88d811fd8db9df7.js"></script><script src="data-parts/000100-d71fdb306cb06463de6c39ea7d1fedd1fe25a3bb50037a995e60aa26e3b7a1ef.js"></script><script src="data-parts/000101-0505684c9894c9cced82a0d9d812470b4d37caf092237b44ca05da147dad56c5.js"></script><script src="data-parts/000102-1c9108a73f1ded65a0b40722653829174cad35df655fd9de87c4d127e05bac70.js"></script><script src="data-parts/000103-eee9a0e3bfa6fc462d5d8a473d818b367514fb93644d35a47071a0495ea4b628.js"></script><script src="data-parts/000104-20eedcf01b477cce6767297045e2550b8f21f1522baa0fa84105c184dbb34130.js"></script><script src="data-parts/000105-e5d830ed0e03c1f843eeef2aff425aee5caf804968b1f7cd75888ca0fb60c07d.js"></script><script src="data-parts/000106-55bc251aaa711e3eb2a83f0680d7901f7761dbb94e23ced62569c911c9f22bf6.js"></script><script src="data-parts/000107-874f7405d9da010c315f7942a80968c0880cadbf007adf42db487b91cf1cae23.js"></script><script src="data-parts/000108-5ca79de38c66e571696b2ba33d620612247ca39bd3deb9edc439613561df537c.js"></script><script src="data-parts/000109-773f9adfeb2b2593837054fd8293d220fe0d5c52c63d36d8b4639258a7000380.js"></script><script src="data-parts/000110-f0d89cba0cfacf430deb7e14786045ee653214d9a22f4dac397802540336966d.js"></script><script src="data-parts/000111-8fc0f74afaa414d8ca8efc9ca6d8f2b4204df846e689ff911e8464f62d7ec7fd.js"></script><script src="data-parts/000112-e50c1be77d05c1cc666f354fe28654bb39b98bd469753941e4892ee95737ff76.js"></script><script src="data-parts/000113-2e7a95bd2b004f172c49ed21c9ce36f682c91874ee1df444b2596b352f8107c9.js"></script><script src="data-parts/000114-3bcb64e35a653e796a6a8062f77cbcd50be37c165dc07cdca286bd82f20820ed.js"></script><script src="data-parts/000115-8d1a385f8a8add31fdc3e508cade523dc2d7c71dfb7798305e449a40c9602adb.js"></script><script src="data.js?v=f6df2659c247"></script>
+  <script src="../../_assets/d9a9ceca673840934e9d0322ab0f60f15c4b75c54277107f277fc84062d21d65.js"></script>
+  <script src="../../_assets/45c7e7e0e64653519db759b75a8cd0cbeceb96e3d51beda593ad0f550ee32530.js"></script>
+  <script src="../../_assets/8af69e384f0110275930d0a2c1dd3e05b4c2c52746cbcc0148c043a28c500205.js"></script>
+  <script src="../../_assets/115ada9845e8e735baee84725f0d0e916b4a576946e46a4b746ffa2dbb9781bb.js"></script>
+  <script src="../../_assets/d33d1b07c5077ddf81a4456930e1210f9e2ccf23868d0ccbc284f6fa2f3b51a8.js"></script>
+</body>
+</html>
