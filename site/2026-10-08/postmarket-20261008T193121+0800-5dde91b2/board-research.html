@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07110f">
+  <title>StockOps 板块研究</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../_assets/6600fc6bb54d824848025686dbb926b68370eff250bd5cc50ff4acefe424cdbd.css">
+  <link rel="stylesheet" href="../../_assets/fd60f3f59aa67dea9bdeb5eff8d6d80b202edee2b09fe6179e13f151ebd5e1ca.css">
+</head>
+<body class="board-research-page">
+  <a class="skip-link" href="#board-research-main">跳到主要内容</a>
+  <header class="topbar board-page-topbar">
+    <div class="brand-block">
+      <div class="brand-mark" aria-hidden="true">↗</div>
+      <div>
+        <div class="brand-line"><strong>StockOps</strong><span class="task-badge">BOARD</span></div>
+        <div id="board-run-meta" class="run-meta">正在读取板块研究快照…</div>
+      </div>
+    </div>
+    <nav class="board-page-navigation" aria-label="StockOps 全局导航">
+      <a data-board-business-link="research" href="#">每日研究</a>
+      <a data-board-business-link="candidates" href="#">候选池</a>
+      <a data-board-business-link="risk" href="#">证券风险识别</a>
+      <a data-board-stage-link="postmarket" href="#">盘后 19:30</a>
+      <a data-board-home-link href="#">总览</a>
+    </nav>
+  </header>
+
+  <main id="board-research-main" class="board-page-main">
+    <section class="board-page-hero">
+      <div>
+        <small>只读研究 · 不参与选股排序</small>
+        <h1>板块研究</h1>
+        <p>板块榜单、资金、拥挤度、聪明钱与指数期权均来自本次运行的冻结快照，不参与候选召回、排序或准入。</p>
+      </div>
+      <div class="board-page-boundary">
+        <strong id="board-page-status" role="status" aria-live="polite">正在校验快照…</strong>
+        <span>「—」表示数据缺失；「0」是真实的零</span>
+      </div>
+    </section>
+
+    <section class="board-market" aria-labelledby="board-market-title">
+      <div class="board-market-heading">
+        <div>
+          <small>价格与资金</small>
+          <h2 id="board-market-title">板块涨跌与资金流向</h2>
+          <p>榜单、时间轴、详情与热图共享分类、搜索、周期与所选板块；周期数值由后端快照提供。</p>
+        </div>
+        <div class="board-market-summary">
+          <span id="board-complete-count">有详情 0</span>
+          <span id="board-advance-count">上涨 0</span>
+          <strong id="board-decline-count">下跌 0</strong>
+        </div>
+      </div>
+      <p id="board-data-status" class="board-data-status" role="status">
+        正在读取板块数据…
+      </p>
+      <div class="board-radar-controls">
+        <div class="board-view-tabs" role="group" aria-label="板块视图">
+          <button type="button" data-board-view="list" aria-pressed="true">榜单</button>
+          <button type="button" data-board-view="heatmap" aria-pressed="false">热图</button>
+        </div>
+        <label class="board-control-select">
+          <span>分类</span>
+          <select id="board-classification-select" aria-label="板块分类">
+            <option value="ths">同花顺概念</option>
+            <option value="sw_l1">申万一级行业</option>
+            <option value="sw_l2">申万二级行业</option>
+          </select>
+        </label>
+        <label class="board-control-select">
+          <span>排序</span>
+          <select id="board-sort-select" aria-label="排序指标">
+            <option value="macd_regime">中短期趋势（强到弱）</option>
+            <option value="return_pct">周期涨幅</option>
+            <option value="net_inflow">净流入金额</option>
+            <option value="verified_main_net_inflow">主力净流入</option>
+            <option value="net_inflow_to_amount_pct">净流入占成交额</option>
+            <option value="main_net_inflow_to_amount_pct">主力净流入占成交额</option>
+            <option value="gross_inflow_to_amount_pct">总流入占成交额</option>
+            <option value="main_buy_share_pct">主力买入占总买入</option>
+            <option value="trading_crowding">拥挤度（申万同级）</option>
+          </select>
+        </label>
+        <div class="board-filter-group" role="group" aria-label="筛选详情完整性">
+          <span>周期</span>
+          <button type="button" data-board-completeness="all" aria-pressed="true">全部</button>
+          <button type="button" data-board-completeness="complete" aria-pressed="false">有周期</button>
+          <button type="button" data-board-completeness="market_only" aria-pressed="false">待补数</button>
+        </div>
+        <div class="board-filter-group" role="group" aria-label="筛选板块类型">
+          <span>类型</span>
+          <button type="button" data-board-taxonomy-filter="all" aria-pressed="true">全部</button>
+          <button type="button" data-board-taxonomy-filter="industry" aria-pressed="false">行业</button>
+          <button type="button" data-board-taxonomy-filter="concept" aria-pressed="false">概念</button>
+        </div>
+        <div class="board-filter-group" role="group" aria-label="选择趋势窗口">
+          <span>时间</span>
+          <button type="button" data-board-window="20d" aria-pressed="true">20 日</button>
+          <button type="button" data-board-window="60d" aria-pressed="false">60 日</button>
+        </div>
+        <label class="board-radar-search">
+          <span class="sr-only">搜索板块</span>
+          <input id="board-radar-search" name="board-search" type="search"
+                 placeholder="搜索名称或代码…" autocomplete="off">
+        </label>
+      </div>
+      <div id="board-radar-controls-heatmap" class="board-heatmap-controls" hidden>
+        <label class="board-control-select">
+          <span>热图指标</span>
+          <select id="board-heatmap-metric-select" aria-label="热图指标"></select>
+        </label>
+        <span id="board-heatmap-view-note" class="board-heatmap-note" hidden>
+          热图与榜单共享分类、搜索、周期与所选板块；行按所选热图指标最新值从高到低排序（缺失排末尾），不受榜单排序影响；单元格标注单位与样本成熟度。
+        </span>
+      </div>
+      <div id="board-mobile-tabs" class="board-mobile-tabs" role="tablist" aria-label="市场雷达视图">
+        <button type="button" role="tab" data-board-mobile-view="list" aria-selected="true">列表</button>
+        <button type="button" role="tab" data-board-mobile-view="detail" aria-selected="false">详情</button>
+      </div>
+      <div class="board-radar-layout" id="board-radar-layout">
+        <article class="board-radar-list-panel" id="board-radar-list-panel" data-board-mobile-panel="list">
+          <header>
+            <strong id="board-visible-count">0 个板块</strong>
+            <span id="board-taxonomy-summary">行业 0 · 概念 0</span>
+          </header>
+          <div class="board-radar-columns" aria-hidden="true">
+            <span>板块</span><span>昨日</span><span>5 日</span><span id="board-period-column" title="列表按20日周期涨幅降序排序，缺失排在末尾">20 日涨幅</span><span id="board-sort-column" hidden>排序值</span><span id="board-regime-column" title="按中短期多空趋势从强到弱排序">趋势 ↓</span>
+          </div>
+          <div id="board-radar-list" class="board-radar-list" role="listbox" aria-label="板块榜单"></div>
+        </article>
+        <article class="board-timeline-panel" aria-labelledby="board-timeline-title">
+          <header>
+            <div>
+              <strong id="board-timeline-title">每日涨跌与资金</strong>
+              <small>上方柱是每日涨跌，下方柱是每日资金（红涨/流入，绿跌/流出）；左上角图例是满格数值，缺失留空</small>
+              <div class="board-flow-toggle" role="group" aria-label="时间轴资金口径">
+                <button type="button" data-board-flow="net_inflow" aria-pressed="true">净流入</button>
+                <button type="button" data-board-flow="verified_main_net_inflow" aria-pressed="false">主力净流入</button>
+              </div>
+            </div>
+            <span id="board-timeline-summary">等待历史数据</span>
+          </header>
+          <div id="board-timeline-axis" class="board-timeline-axis" aria-hidden="true"></div>
+          <div id="board-timeline" class="board-timeline"></div>
+        </article>
+        <aside class="board-detail-panel" data-board-mobile-panel="detail" aria-live="polite">
+          <button id="board-detail-back" class="board-detail-back" type="button">← 返回板块列表</button>
+          <div id="board-detail"></div>
+        </aside>
+      </div>
+      <div id="board-heatmap" class="board-heatmap-panel" hidden></div>
+      <footer class="board-radar-footer">
+        <span id="board-radar-coverage">行业与概念混排</span>
+        <span id="board-sort-note">趋势从强到弱排序 · 缺失排末尾</span>
+        <span>缺失值留空，不按零处理；净额与主力净流入是不同概念</span>
+      </footer>
+    </section>
+
+
+    <section class="board-intelligence" aria-labelledby="board-intelligence-title">
+      <header class="board-intelligence-heading">
+        <div>
+          <small>FROZEN MARKET INTELLIGENCE</small>
+          <h2 id="board-intelligence-title">市场情报只读事实</h2>
+          <p>聪明钱、指数期权与行业资金矩阵保留各自状态、时点、覆盖、方法和限制，不在浏览器补算业务指标。</p>
+        </div>
+        <strong id="board-intelligence-status" role="status" aria-live="polite">等待数据</strong>
+      </header>
+      <div class="board-family-grid">
+        <article id="smart-money-family" class="board-family-card"></article>
+        <article id="index-options-family" class="board-family-card"></article>
+      </div>
+      <section class="board-fund-flow" aria-labelledby="board-fund-flow-title">
+        <header>
+          <div>
+            <h3 id="board-fund-flow-title">行业资金流矩阵</h3>
+            <p id="board-fund-flow-provenance">等待 16 张冻结矩阵…</p>
+          </div>
+          <strong id="board-fund-flow-count">0 / 16</strong>
+        </header>
+        <div id="board-fund-flow-matrices" class="board-fund-flow-matrices"></div>
+      </section>
+      <section class="board-source-limitations" aria-labelledby="board-source-limitations-title">
+        <h3 id="board-source-limitations-title">来源与总限制</h3>
+        <div id="board-source-limitations"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="board-page-footer">
+    <span>只读研究事实 · selection_impact = none</span>
+    <span>不构成投资建议</span>
+  </footer>
+
+  <script src="board-research-data-parts/000000-05ec4d7944a39ea3cc0a68771680747c1c9e0afc60db693d3425efdb1119eb9f.js"></script><script src="board-research-data-parts/000001-7725a9444bb8b7fd40654d94c8ff935240e299da786c202ec836a49341cb7eb7.js"></script><script src="board-research-data-parts/000002-258bd7b7c12e5e0c176003e4a73e28b3365374b0a809f1f15c1d22cf0961b449.js"></script><script src="board-research-data-parts/000003-693f01275eb33865f449ede5f2bac747082f8c38ae647da9218c3f57dbbfe139.js"></script><script src="board-research-data-parts/000004-155d0cacf6652c635b64d602f9a220232aaba626d9db6d2624342cb88f4e6693.js"></script><script src="board-research-data-parts/000005-ab71f0ea369366b595bf9a84cfd947a0cac0b54e848c7fbf8dc11d22d512c224.js"></script><script src="board-research-data-parts/000006-408fe4d327a902adc9b70e1e0a0c2a735e23ccd0f24c4eddf610e11664d7910c.js"></script><script src="board-research-data-parts/000007-c15f58258be8005d1e97750649360f69caf35e2b3eb57e670628dea20e4e9816.js"></script><script src="board-research-data-parts/000008-ddfb5fecb4d1f9554d91e423f08551eac6eb54170d15aa51f063cb739481e786.js"></script><script src="board-research-data-parts/000009-79cfd9f068758e60a8b6cc15ca95549f2695fc40767b6ec220a76498be82b16d.js"></script><script src="board-research-data-parts/000010-fe08a57fe6d2e14b2795151df1c207c7b04e29be071cdc88aae71816db31d920.js"></script><script src="board-research-data-parts/000011-9f95b8091c39aff6af1b19ab6ebe378425d38fac6bce5091b2befd004f66aa84.js"></script><script src="board-research-data-parts/000012-94754927dd01acf45233c0f229a0c12d425eb57fbdc88cb1ec73608ae1541977.js"></script><script src="board-research-data-parts/000013-6c8f0aef91d0ee4f85b593a0942601cd5a290c7263c2aa0ecb5656f52cc151aa.js"></script><script src="board-research-data-parts/000014-7a89794fc31611ceb6ff718ac31fc1425a21b03d1b73b18a449c1db539931960.js"></script><script src="board-research-data-parts/000015-886d748c795776a3385dfd5c5437bc2bfa529cf7de9c5ac80119b4f3472cb788.js"></script><script src="board-research-data-parts/000016-19b502153d621a80a5169702ef3752967bb24af71b3811bf170933a3d821ef39.js"></script><script src="board-research-data-parts/000017-61561d4ca30879f335628b6b9d738dcee67e28edc52bc6cd9a2b175360b1c885.js"></script><script src="board-research-data-parts/000018-48b3abb910ff4859ea3742ff7bcc644bdcdc9db11e978b06ce7843f4eb14567e.js"></script><script src="board-research-data-parts/000019-da6344d59697f80f65078a46bf9812dd1f7108298561cb1526b4bd7ec0737b3a.js"></script><script src="board-research-data-parts/000020-dbeaafd563eacaaed243613522730486671cccca9088bd367f30d8dc222bd185.js"></script><script src="board-research-data-parts/000021-399fdd6d543bade9f0ae836ee56312e7c80f9b5efb103ef77d8b1d15599b9b5d.js"></script><script src="board-research-data-parts/000022-bda9f6a3108b192e4f62d476334f42021c0b89b1f50c5de617a675db9eab061d.js"></script><script src="board-research-data-parts/000023-05cadf3ab19a9198ff4ce4b4e252762be504d499ff65cba36d2d42969b3e3fbc.js"></script><script src="board-research-data-parts/000024-f34bf4ce00ecf39a7f891dcaafeb4b9edfc8509884137831ab5b3e7738893d55.js"></script><script src="board-research-data-parts/000025-fd9ddcd4f9208e1da039ea69e2637f36656dd1fa2047ed7ab8803d14f2715bae.js"></script><script src="board-research-data-parts/000026-c2525f430d09e97389a8a7fb0ae4f14fca60c3ee076c9dc074bda6a3236bd8f8.js"></script><script src="board-research-data-parts/000027-52e7915f1b12a8729b1cd825776afaf53ea5ae68143f5fdf79bc6fa6a5cd0bf9.js"></script><script src="board-research-data-parts/000028-258a684354f9bd5475f0963ed31869f43a0baef9fe3254ac67f204016126e1e5.js"></script><script src="board-research-data-parts/000029-04d0b0f09af855b9279ec6f109f67f58dcebfbaba113aeb55a2407e4bd157573.js"></script><script src="board-research-data-parts/000030-2781c4b17c7696c69fc08d5ac3d90993c3cf119dbd8442a8fc32a42757b335e3.js"></script><script src="board-research-data-parts/000031-a1bfe9377333aadb981f03c4c7917143f287aa13a367137e6173936ca4405339.js"></script><script src="board-research-data-parts/000032-6bc0db3c6e91ee254c7dab8542be80875d22f18d5547f4c82b9b8776672a2d61.js"></script><script src="board-research-data-parts/000033-1675cd22214455adb5c809e08817b1d92c8f20c0674cc4aa7f2d729cee024339.js"></script><script src="board-research-data-parts/000034-1277f5390e766bb8bba7c065b88686cfdafd63fd40eed7b9b698993e8e566161.js"></script><script src="board-research-data-parts/000035-6e01d8708391179a719884d8797d7b5aa5dced9827e029d743908d715e19503c.js"></script><script src="board-research-data-parts/000036-834dca4421fbb953bd287b5bf2c848b002ab9ce180c38e927fb75219f8e9f2f1.js"></script><script src="board-research-data-parts/000037-ccfbaf542d5095a7146a565fb86ed4924f8965f556312e6aa33f660ea613da49.js"></script><script src="board-research-data-parts/000038-d6a1584fad1e5f3d21187e81c7915ec02f3148c10ed3c83fb382f6fd141f2c52.js"></script><script src="board-research-data-parts/000039-ec7cdcda68c1a3043ef1c0e5c3e1c9b60fa2f0aad9376c7aacb25ad0e55eb220.js"></script><script src="board-research-data-parts/000040-401b07d2c3205c89bdee9633458cfb5a039b681c731ba5e023c46f8184440a01.js"></script><script src="board-research-data-parts/000041-b2280df4210b036d172656cd673cae228f7c2beaa2612efc2d7e9e3f2345d7d0.js"></script><script src="board-research-data-parts/000042-e96d2a4d83ab5f701271cbba061b832256387e3ed3ff4dd5d58e808f80e5958f.js"></script><script src="board-research-data-parts/000043-7fb41613a8d0870b4a83c7403226d81c9378e0ba31a4cf6980be58bffd2df121.js"></script><script src="board-research-data-parts/000044-b69568c5c9da45749ab738d72b7e68701a58e3edc648223293bc1613bb0c221d.js"></script><script src="board-research-data-parts/000045-baa343e95a3b6b3755f8ccc3b4a236e3b9d9e4de6b00955988bbef0647fc4f34.js"></script><script src="board-research-data-parts/000046-3a4bd8261b25cf1f399134d69408bb7720fa8b6058d3c2bca2dc7b01a8b8314c.js"></script><script src="board-research-data-parts/000047-fa49c168c2a9ab9921f04bb7f3de4c2ba284b9a4caedbb1d930888809b1e3dee.js"></script><script src="board-research-data-parts/000048-ec1e33f2da596d064bb1f339c86e34752efac04382beff0b9e871fabff054c17.js"></script><script src="board-research-data-parts/000049-ae20d508f43e227252692693f5e44b5e052686650168e5872353ce0355d17e1b.js"></script><script src="board-research-data-parts/000050-d98b38f18b93b9a5713565ff24bd0772df9a7b6665a329b47e5d6386c5331fed.js"></script><script src="board-research-data-parts/000051-cb379ebab48d12b671cc8c85416d79bd4cfa111ba19e1791508f1fb28b14677d.js"></script><script src="board-research-data-parts/000052-0f686362b46367487b37e9ee64337ea18ab972a27a2d04a0af464b4525456e51.js"></script><script src="board-research-data-parts/000053-af3670f4ec19c62e57cde23823d4e0c8aa0d339084080d4d39fcb57d421b57ac.js"></script><script src="board-research-data-parts/000054-898adf1611855a036b2edd091ff2f987d3df2e6efad289019be3bee09eef63e3.js"></script><script src="board-research-data-parts/000055-b888c7fd8370a85d234f0e89d09f2c36590aa745b23793ba8fd7a96e7466c023.js"></script><script src="board-research-data-parts/000056-318b63ff3451bd6138a30c36dd0cada4adde0e817277706c42b61eba6e1db7fa.js"></script><script src="board-research-data-parts/000057-cb86acbb5bfc51abb7bae333973e8cf479dc952b2f9abacfcd73ce1d00ff280c.js"></script><script src="board-research-data-parts/000058-a9ba23151e6ec1cac77de6b990d626028229ee351463d62a429d7cdc54a6cb59.js"></script><script src="board-research-data-parts/000059-0a65d2c4f10f79e0081488e0d184f1b107f2cceb2e588b0aab1841fb2d84b6b5.js"></script><script src="board-research-data-parts/000060-cbddf3d0defea4ac726998757fc5b4c4e9e45d92a169263659441e997716022a.js"></script><script src="board-research-data-parts/000061-4d108913a710c5a90fce5ea99a39c7028fd7b2f2aba26a2285c2f56af25c9eb6.js"></script><script src="board-research-data-parts/000062-b1519ca7dfc635667791ecdfe5211ae0ef2edac5aa7624dc0118d3f04e63e4b0.js"></script><script src="board-research-data-parts/000063-9d60b32af20492f137ead1caf3bbcab71c02f50adbc95fc98d48d118d912fcbb.js"></script><script src="board-research-data-parts/000064-1652e88f01be3204aa05c51b3eadb4b703b7ad69f075e4943e8143487d5c5e0b.js"></script><script src="board-research-data-parts/000065-d2f4333428cfe44285599bf3b47b941d107c66919584c35f53fa694b8dcb02d2.js"></script><script src="board-research-data-parts/000066-ccb2d3b2c7f5f3aca99ac51d5df303e5237f8ca44ecc87732881a177ad6f8ba4.js"></script><script src="board-research-data-parts/000067-f81c99c4ebc7c2e80acf5cde5e936713e7df41e76d28f6a9ca267c0e935c6daa.js"></script><script src="board-research-data-parts/000068-f90c43c839063fa72a903e0d947571621cd9a6167b8d0d6ad3f4df58a3c6c12b.js"></script><script src="board-research-data-parts/000069-125953b01f84a0c2f2f455e56194e2c9d14ad93391a7a5f801406eafa03c3367.js"></script><script src="board-research-data-parts/000070-bbacc27c1e3e8b7806d52cf28aa848c2fb1d2215eac6c6f04521b2c984342388.js"></script><script src="board-research-data-parts/000071-e18603fb6c39192fc175032c1130ccc9b1ee49497a959694cae89e09bcd5f539.js"></script><script src="board-research-data-parts/000072-85eb3d9bbba4b400c0bac758af373749f25f018edce700a9a9e3637411eef6d4.js"></script><script src="board-research-data-parts/000073-6e0133d9420c4c1eb256e678d2e1a54cbf95438a822234decbf44ef6a4e95d04.js"></script><script src="board-research-data-parts/000074-b86cc6e62a5c4f08a806fa4ae24ca5714222b7ed5b0d4a60ed67f7284208df2a.js"></script><script src="board-research-data-parts/000075-f37f52d33f02113b5a86b2fe1278d0dd080560f593573372db903d72a0fee513.js"></script><script src="board-research-data-parts/000076-06e99b014b194ce278e169cfb4791270b0d8df2a2976879c3714476b5c6aad92.js"></script><script src="board-research-data-parts/000077-7b1d79ecc9469b76b89e978f15ff49d4f81bfc57607c6f982b41a632a9c4bc65.js"></script><script src="board-research-data-parts/000078-8eca0daea07af3da24b4ed25a83ec4d18c27cbd6fb01f008973ea36f8f2b3ef1.js"></script><script src="board-research-data-parts/000079-39aa0f6def1d79ddac391db49c2ba1c747d85e672b3d1b511f7a51ee241e34d4.js"></script><script src="board-research-data-parts/000080-0fcd4a9ad1e5c2498ed8dd5106f57408ec0267923f52b4f36c1ba18ba06bb11f.js"></script><script src="board-research-data-parts/000081-8ef9f9e57157bff82381e54aa22659df071762cc51c6349826ca2fe202fd7a1f.js"></script><script src="board-research-data-parts/000082-7dc34d9e13f0504f4e2dacc35f73dfd3ba22d730bdc9297cb8ae89df05bee483.js"></script><script src="board-research-data-parts/000083-79c3ce33d55bbb63dbdc59ad478ca6536d0175660c34815cb410fd0de157dd48.js"></script><script src="board-research-data-parts/000084-a3c33036567b8cd7434b53793553c5ee27663fc235b6d8a15b48e4ede64313bf.js"></script><script src="board-research-data-parts/000085-196fd7447774201925687e8dd32288da7e0c18e48b525d22a65ea5a7a1c56ca0.js"></script><script src="board-research-data-parts/000086-3dd9cdde0e6253179fd5ac49cda05b240f46855a7bf063c59314ad8829d74c03.js"></script><script src="board-research-data-parts/000087-1d8363b43138b9fb6669c6dd50e3e7f0037576995462b9391b35f9c0857fd2cb.js"></script><script src="board-research-data-parts/000088-313bef765f0d9170dc144dc95670bc39f191a1f22acf2db38f844bf2c50bff1a.js"></script><script src="board-research-data-parts/000089-232bef70ff6c97f4796c6fcd74cdf8512932cd7f6118b6837c6ed9e9ce89cfda.js"></script><script src="board-research-data-parts/000090-ed8e787f51898bc9439735236ac84623182ceb0e1122450e7c4c1a210d3e9d6a.js"></script><script src="board-research-data-parts/000091-40f2b6808c452017443a7b06eaed9a6f593781fb3eb3660c3fafc3eda269b4b9.js"></script><script src="board-research-data-parts/000092-2a409c8e82ba40453dfae6f9a4cf2196ea7269ed52b89a376a3d8376d8741c04.js"></script><script src="board-research-data-parts/000093-e07cac518465b981d7d0ba8af535399bb80a5738d4559faa2f1387b2345ce784.js"></script><script src="board-research-data-parts/000094-83fd58c69c8005a4c775097af42ff24be8e3486b04f0810604eb497e8384be28.js"></script><script src="board-research-data-parts/000095-81b941115e15f4225be12f826d4d8e2f689da3fa1b785c705b35d87d1055b64e.js"></script><script src="board-research-data-parts/000096-dd2c50f9d053630894d40323206e6122e076e4fefb8c4a13b8f4381e89eaa97b.js"></script><script src="board-research-data-parts/000097-942c8bd7c168608376f53a1a5b840a47b7e7e141719a3b1bd244d9c5f5e1d2eb.js"></script><script src="board-research-data-parts/000098-3d5277ede0024a47026b1e85b823faad1d6f987609430ae763e5f1f6af497fd4.js"></script><script src="board-research-data-parts/000099-495cdf4191a03475d3f536ceedf0362ac1d5503dce389499e682ea7f5eb72090.js"></script><script src="board-research-data-parts/000100-320413b2d708be885b032afd555b5b0e80dddb9b7d82ccb0ff8018f706ef54a8.js"></script><script src="board-research-data-parts/000101-c39e4d1926b23ec1259c7f0d43bc73b70101f124b5dc5b2dc9fc371d2cc7590b.js"></script><script src="board-research-data-parts/000102-5f6b40b8a75e1de415a931fb37f3c324f24cc41340a2747e438398bd9c14d7e9.js"></script><script src="board-research-data-parts/000103-9b1745c9ee96f770bcfe0494999f7b9325f699dc005cb9fcaa290c7c1e187eae.js"></script><script src="board-research-data-parts/000104-cd703aca242e2ccc9599f40b83d1cc9989571d1f0d11a075a64a582d9ce1d6a6.js"></script><script src="board-research-data-parts/000105-789bb57116a6b2bd5fd539596d5ab16ee6bdc1630d410e783d791df484ff5a42.js"></script><script src="board-research-data-parts/000106-80f4c6bd12256cce8208e1ab61dc268aea543cea36327317a93904d57f44e81a.js"></script><script src="board-research-data-parts/000107-6671068e85aef6c21a82de57caa94c315b28cb75756acdc7a6c2ca40bdc95028.js"></script><script src="board-research-data-parts/000108-501bf4f050af7f29fa28e96c162f148abd183a97c647d4f8ef14133dee539639.js"></script><script src="board-research-data-parts/000109-25e25fcec83f1b01c420e5f82e166d5e91e32a6ca72f76d685a7fc0e763fd54a.js"></script><script src="board-research-data-parts/000110-86bc6c8a84a83d5395912cab07fa9380749f00213cde05519a4eba75554b5c1e.js"></script><script src="board-research-data-parts/000111-ac8e6cc2da1a65678c2c99702f04b01abb87515dd40673e36924b95d31b72d2b.js"></script><script src="board-research-data-parts/000112-862abf2b28bd7f24f10557f5f27309d543e32c036ae208af1848c28cc0703beb.js"></script><script src="board-research-data-parts/000113-33572af8004a3b07e7467604515ec63ac3a241ccc8a0a9ed8537c497bb103418.js"></script><script src="board-research-data-parts/000114-e71a9a8ca43c8aa3de230b0de05bcba82f51885b2aaa46e36371ab6519c6bb78.js"></script><script src="board-research-data-parts/000115-8e970fcc5fdd096a4f96edec45389d18829523a3b2f3c1b2bb9c05147b046f03.js"></script><script src="board-research-data-parts/000116-a90c7a3de52c405ca316b562ad19403d1f6d2a35e0367888a2d1d0c419a9113f.js"></script><script src="board-research-data.js?v=b1ef0aa775ab"></script>
+  <script src="../../_assets/d3f4bbc4614c27f9701c1d1ae4ada400f9df05d7b70928384c0e1eef07b23a15.js"></script>
+  <script src="../../_assets/20bbd6bbbac225324e2da3d64951b075b30604e6a5675e1df70a7da831be8253.js"></script>
+  <script src="../../_assets/4cdb3ff98fb6956dc4c9eb69190fae1deed9da5bb6cb449fb0e2fe968d220e02.js"></script>
+</body>
+</html>

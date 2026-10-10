@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StockOps 每日研究工作台</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../_assets/6600fc6bb54d824848025686dbb926b68370eff250bd5cc50ff4acefe424cdbd.css">
+  <script src="../../_assets/de49082f0591a7da552fecf30aa135ea64230ffa24e23ef4c85efce8e0e64588.js"></script>
+<script src="../../_assets/262cb585d2ab0bcef23209c13b7bbd750c0fd15c2ee0b1ba5d903cc5a959c2c5.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="brand-mark" aria-hidden="true">↗</div>
+      <div>
+        <div class="brand-line">
+          <strong>StockOps</strong>
+          <span id="task-type" class="task-badge">DAILY</span>
+        </div>
+        <div id="run-meta" class="run-meta">正在读取运行信息…</div>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <div id="source-popover" class="source-popover">
+        <button id="source-summary" class="source-summary" type="button"
+                aria-describedby="source-tooltip" aria-expanded="false">
+          <span id="source-health-dot" class="health-dot"></span>
+          <span>
+            <strong id="source-health-label">数据源检查中</strong>
+            <small id="source-health-count">— / — SOURCES</small>
+          </span>
+        </button>
+        <div id="source-tooltip" class="source-tooltip" role="tooltip">
+          <div class="tooltip-title">
+            <strong>数据源明细</strong>
+            <span id="source-tooltip-total">—</span>
+          </div>
+          <div id="source-tooltip-list" class="source-tooltip-list"></div>
+        </div>
+      </div>
+      <a class="archive-button" href="stock-analysis.html">个股研究</a>
+      <a class="archive-button" href="#history-panel">历史报告</a>
+    </div>
+  </header>
+
+  <nav class="system-navigation" aria-label="StockOps 全局导航">
+    <div class="workspace-tabs" aria-label="StockOps 工作区">
+      <button type="button" data-workspace="research" aria-pressed="true">每日研究</button>
+      <button type="button" data-workspace="candidates" aria-pressed="false">候选池</button>
+    </div>
+    <div class="stage-tabs" aria-label="StockOps 运行阶段">
+      <span>交易时段</span>
+      <a data-stage-link="postmarket" href="#">盘后 19:30</a>
+      <a class="risk-tool-link" data-business-link="risk" href="#">风险识别</a>
+      <a class="home-link" data-home-link href="#">总览</a>
+    </div>
+  </nav>
+
+  <section id="ranking-identity-warning" class="stage-alert"
+           role="alert" hidden>
+    <span aria-hidden="true">!</span>
+    <p id="ranking-identity-warning-text">排名快照身份不匹配。</p>
+  </section>
+
+  <main id="stage-workspace" class="stage-workspace workspace-view">
+    <section class="stage-hero">
+      <div>
+        <small id="stage-eyebrow">STAGE</small>
+        <h1 id="stage-question">正在读取本阶段主问题…</h1>
+        <p id="stage-focus-detail">正在读取阶段结论…</p>
+      </div>
+      <div class="stage-focus">
+        <span>本阶段焦点</span>
+        <strong id="stage-focus-title">—</strong>
+        <small id="stage-ai-status">—</small>
+      </div>
+    </section>
+
+
+    <section id="stage-metrics" class="stage-metrics" aria-label="阶段指标"></section>
+
+
+    <section class="stage-action-grid">
+      <article class="stage-action-panel">
+        <div class="stage-panel-heading">
+          <small>PRIMARY</small>
+          <h2 id="stage-primary-label">本阶段处理顺序</h2>
+        </div>
+        <div id="stage-primary-items" class="stage-item-list"></div>
+      </article>
+      <article class="stage-action-panel is-secondary">
+        <div class="stage-panel-heading">
+          <small>SECONDARY</small>
+          <h2 id="stage-secondary-label">继续观察</h2>
+        </div>
+        <div id="stage-secondary-items" class="stage-item-list"></div>
+      </article>
+    </section>
+
+    <section class="stage-alert">
+      <span aria-hidden="true">!</span>
+      <p id="stage-alert">正在读取本阶段边界…</p>
+      <button type="button" data-stage-deep-link="research">进入深度研究 →</button>
+    </section>
+  </main>
+
+  <main id="research-workspace" class="workspace-view" hidden>
+    <section class="intro">
+      <div>
+        <h1>每日研究工作台</h1>
+        <p>把筛选信号、价格结构与 AI 研判放在同一条决策链上</p>
+      </div>
+      <span id="last-updated" class="last-updated"></span>
+    </section>
+
+
+    <section class="metrics" aria-label="本次研究概览">
+      <article><span>完整筛选</span><strong id="metric-candidates">0</strong><small id="metric-ai-focus">AI 深度分析 0 只</small></article>
+      <article><span>策略命中</span><strong id="metric-hits">0</strong><small id="metric-hit-note">0 只命中策略</small></article>
+      <article><span id="metric-score-label">首名生产排名分</span><strong id="metric-score" class="accent-text">—</strong><small id="metric-score-stock">暂无候选</small></article>
+      <article><span>1 日收涨</span><strong id="metric-advancers">—</strong><small>基于可用日 K</small></article>
+    </section>
+
+
+    <section id="candidate-comparison" class="candidate-comparison" aria-labelledby="comparison-title">
+      <div class="comparison-heading">
+        <div>
+          <h2 id="comparison-title">↕ 榜单变动</h2>
+          <small id="comparison-subtitle">正在读取同任务历史榜单…</small>
+        </div>
+        <div class="comparison-periods" role="group" aria-label="选择榜单对比周期">
+          <button type="button" data-comparison-period="previous" aria-pressed="true">昨日</button>
+          <button type="button" data-comparison-period="week" aria-pressed="false">近一周</button>
+        </div>
+      </div>
+      <div id="comparison-empty" class="comparison-empty" hidden></div>
+      <div id="comparison-content" class="comparison-content">
+        <div class="comparison-summary">
+          <div class="comparison-metrics" role="group" aria-label="榜单变动概览">
+            <button type="button" data-comparison-filter="" aria-pressed="true">
+              <strong id="comparison-current-count">0</strong><span>今日在榜</span>
+            </button>
+            <button type="button" data-comparison-filter="entered" aria-pressed="false">
+              <strong id="comparison-entered-count" class="accent-text">0</strong><span>今日新进</span>
+            </button>
+            <div>
+              <strong id="comparison-exited-count" class="warning-text">0</strong><span>今日调出</span>
+            </div>
+            <button type="button" data-comparison-filter="retained" aria-pressed="false">
+              <strong id="comparison-retained-count">0</strong><span>连续在榜</span>
+            </button>
+          </div>
+          <div class="comparison-net">
+            <span id="comparison-net-label">净变化</span>
+            <strong id="comparison-net-change">0 只</strong>
+          </div>
+        </div>
+        <div class="comparison-lists">
+          <section class="comparison-list is-entered" aria-labelledby="comparison-entered-title">
+            <button class="comparison-list-heading" type="button"
+                    data-comparison-list-toggle="entered" aria-expanded="false">
+              <h3 id="comparison-entered-title">今日新进</h3>
+              <span id="comparison-entered-label">0 只</span>
+            </button>
+            <div id="comparison-entered-list" class="comparison-stock-list"></div>
+          </section>
+          <section class="comparison-list is-exited" aria-labelledby="comparison-exited-title">
+            <button class="comparison-list-heading" type="button"
+                    data-comparison-list-toggle="exited" aria-expanded="false">
+              <h3 id="comparison-exited-title">今日调出</h3>
+              <span id="comparison-exited-label">0 只</span>
+            </button>
+            <div id="comparison-exited-list" class="comparison-stock-list"
+                 role="region" tabindex="0" aria-label="今日调出股票列表"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="strategy-lane-board" aria-labelledby="strategy-lane-title">
+      <div class="lane-board-heading">
+        <div>
+          <small id="strategy-lane-eyebrow">EVIDENCE GROUPS</small>
+          <h2 id="strategy-lane-title">七类证券证据</h2>
+          <p id="strategy-lane-description">按公开证据分组，同一只股票可跨组命中；组内保持生产排名。</p>
+        </div>
+        <div class="lane-board-summary">
+          <span id="lane-count">7 类证据</span>
+          <strong id="lane-ai-summary">AI 0 只</strong>
+        </div>
+      </div>
+      <div id="strategy-lanes" class="strategy-lanes"></div>
+    </section>
+
+    <section id="history-panel" class="history-panel">
+      <div class="section-heading">
+        <div class="history-heading-text">
+          <h2>历史报告</h2>
+          <small id="history-scope">仅显示本时段的历史运行，按交易日汇总</small>
+        </div>
+        <div class="history-heading-actions">
+          <span id="history-count">0 天 · 0 次运行</span>
+          <button id="history-mobile-toggle" class="mobile-section-toggle" type="button"
+                  aria-expanded="false" aria-controls="history-days">展开</button>
+        </div>
+      </div>
+      <div id="history-days" class="history-days"></div>
+    </section>
+
+  </main>
+
+  <main id="candidate-workspace" class="workspace-view candidate-workspace" hidden>
+    <section class="candidate-intro">
+      <div>
+        <small>CANDIDATE POOL</small>
+        <h1>候选池</h1>
+        <p>按证据组、组合规则与风险筛选；所有筛选保持唯一生产排名，点击股票查看技术图。</p>
+      </div>
+      <span id="candidate-workspace-count">0 只候选</span>
+    </section>
+
+    <section id="ranking-summary" class="status-band"
+             aria-label="生产排名快照" hidden>
+      <article><span>排序快照</span><strong id="ranking-snapshot-id">—</strong><small id="ranking-version">—</small></article>
+      <article><span>信号 / 截止</span><strong id="ranking-signal-date">—</strong><small id="ranking-as-of">—</small></article>
+      <article><span>准入</span><strong id="ranking-admission-counts">—</strong><small>allow / watch / reject</small></article>
+      <article><span>六家族独有新增</span><strong id="ranking-family-only-count">—</strong><small id="ranking-coverage">—</small></article>
+      <article><span>降级 / 最高风险</span><strong id="ranking-recall-status">—</strong><small id="ranking-highest-risk">—</small></article>
+    </section>
+
+
+    <section class="strategy-observer" aria-labelledby="strategy-observer-title">
+      <div class="strategy-observer-heading">
+        <div>
+          <h2 id="strategy-observer-title">精细筛选</h2>
+          <small id="strategy-filter-summary" aria-live="polite">全部候选</small>
+        </div>
+        <div class="strategy-heading-actions">
+          <div class="strategy-total"><span>策略 · 规则</span><strong id="strategy-total">0 · 0</strong></div>
+          <button id="strategy-mobile-toggle" class="mobile-section-toggle" type="button"
+                  aria-expanded="false" aria-controls="strategy-filter-content">展开</button>
+        </div>
+      </div>
+      <div id="strategy-filter-content">
+        <div class="observer-filter-band">
+          <span class="observer-filter-label">组合视图</span>
+          <div id="selection-rule-filters" class="strategy-filters rule-filters"
+               role="group" aria-label="按组合规则筛选候选股"></div>
+        </div>
+        <div class="observer-filter-band">
+          <span class="observer-filter-label">底层策略</span>
+          <div id="strategy-filters" class="strategy-filters"
+               role="group" aria-label="按命中策略筛选候选股"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="candidate-risk-filter" aria-labelledby="candidate-risk-filter-title">
+      <div>
+        <strong id="candidate-risk-filter-title">证券风险</strong>
+        <small>红色保留审计但不进入正式 AI；未知不等于安全。</small>
+      </div>
+      <div id="candidate-risk-filters" class="candidate-risk-filters"
+           role="group" aria-label="按证券风险等级筛选候选"></div>
+    </section>
+
+    <section class="research-workspace">
+      <aside class="candidate-panel">
+        <div class="panel-heading">
+          <div><h2>生产排名候选池</h2><small id="candidate-count">0 SYMBOLS</small></div>
+        </div>
+        <p id="sector-heat-reliability-note" class="sector-heat-reliability-note" hidden></p>
+        <div class="candidate-columns" aria-hidden="true"><span>股票</span><span>策略信号</span><span>全局名次 · 排名分</span></div>
+        <div id="candidate-list" class="candidate-list"></div>
+      </aside>
+
+      <section class="stock-panel" aria-live="polite">
+        <div class="stock-overview">
+          <div class="stock-identity">
+            <div><h2 id="stock-name">暂无数据</h2><span id="stock-code"></span> <a id="candidate-analysis-link" href="stock-analysis.html">分析这只股票 →</a></div>
+            <p id="stock-strategies">未选择候选股</p>
+          </div>
+          <dl class="quote-summary">
+            <div><dt>最新收盘</dt><dd id="latest-close">—</dd></div>
+            <div><dt>1 日涨跌幅</dt><dd id="change-1d">—</dd></div>
+            <div><dt>5 日涨跌幅</dt><dd id="change-5d">—</dd></div>
+            <div><dt>生产名次 · 排名分</dt><dd id="selected-score" class="accent-text">—</dd></div>
+          </dl>
+        </div>
+
+        <div class="chart-toolbar">
+          <span class="period-badge">日 K</span>
+          <div id="chart-filters">
+            <fieldset id="indicator-filters"><legend>主图指标</legend></fieldset>
+            <fieldset id="subchart-filters"><legend>副图指标</legend></fieldset>
+            <span id="event-note" class="event-note" hidden></span>
+            <details id="event-menu" class="event-menu" hidden>
+              <summary id="event-summary">事件节点</summary>
+              <fieldset id="event-filters"><legend>事件类型</legend></fieldset>
+            </details>
+          </div>
+        </div>
+        <div class="chart-stage">
+          <div id="chart" role="img" aria-label="所选股票日 K 线图"></div>
+          <p id="chart-status" class="chart-status" role="status" hidden></p>
+        </div>
+      </section>
+    </section>
+
+    <section id="candidate-security-risk-panel" class="candidate-security-risk-panel"
+             aria-label="所选候选的独立风险识别证据">
+      <p class="company-panel-empty">选择候选股后显示独立风险识别结论。</p>
+    </section>
+
+    <section id="candidate-company-panel" class="company-decision-panel"
+             aria-label="所选候选公司的质量、估值、事件与风险">
+      <p class="company-panel-empty">选择候选股后显示公司质量与事件风险。</p>
+    </section>
+
+    <section id="candidate-leadership-panel" class="leadership-evidence-panel"
+             aria-label="所选候选股的板块龙头与非对称强度研究证据（仅供参考，不影响排序）">
+      <p class="leadership-panel-empty">选择候选股后显示龙头与相对强度研究证据。</p>
+    </section>
+
+    <section class="lower-grid">
+      <article class="opinion-panel">
+        <div class="opinion-lead">
+          <small>AI OPINION</small>
+          <h2>个股研究观点</h2>
+          <span>RISK FIRST</span>
+        </div>
+        <p id="stock-opinion">选择候选股后显示对应的 AI 观点。</p>
+      </article>
+
+      <section id="source-panel" class="source-panel">
+        <div class="section-heading"><h2>数据质量</h2><span id="source-panel-summary">—</span></div>
+        <div id="source-status" class="source-status"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer>研究辅助，不构成投资建议。</footer>
+
+  <script src="data-parts/000000-051b5585d5a346077714e76f6eb9a4586a7c4c71d639138cec7253dbd8d677f3.js"></script><script src="data-parts/000001-67e45157cd36937caab9dfc730d0815b4062b4b3834ff9600b0b716c143e3f3d.js"></script><script src="data-parts/000002-b6202dc70a8b69911ed75fd4041a6996c112c176fd06fa6754f7fa6f02d83a46.js"></script><script src="data-parts/000003-f3a0906a0cf3b31d315e6b4f3679fcf0f8d027e382f123698d366daadb38fd54.js"></script><script src="data-parts/000004-5a85f53d6bca4f3ccabf2ec2836488c5742da7e610c20a662832d96936d669ac.js"></script><script src="data-parts/000005-f91024de949966d79173aaa0544184ff46dd58c0f676334ba9d1697e551eab16.js"></script><script src="data-parts/000006-5989f38d8331431e2009064bed2e3c360066178a9d064b50f9509b31a91fea05.js"></script><script src="data-parts/000007-6b35fa1329de424c5853897696bdcf4b4374830721a8216aab4cd349c851d0b8.js"></script><script src="data-parts/000008-14957d92bde24e41e5ece5e684edaf61f72409df3ce6167f666e8a357fde4fee.js"></script><script src="data-parts/000009-8809391f3593e472ca0a0de1437b58458be4f6a2869b07ac76875e02579b3306.js"></script><script src="data-parts/000010-367396e65e0d41bc7003f9dc8da8b93725271c8ea937380ff988b69eb9d7a624.js"></script><script src="data-parts/000011-f331e97b7916c27ab6d591d84f7c8fd378daaabdcc489dd1b87aceeec8f2836d.js"></script><script src="data-parts/000012-0ace01e434b52a6c5b0f95d5f97cddcb20a0c233ecd0cfde8a1361b27a16aebd.js"></script><script src="data-parts/000013-d4c63b6590039b0ee84d88dbd2372866986fb9286b16a1a38a48e8365725b265.js"></script><script src="data-parts/000014-f2b1e9436c1eb8a52691b318f64bce3777ed3a092334cecb26b447ac868b1878.js"></script><script src="data-parts/000015-c77db55058cdd73d0b4f7c56ea595366fcc3353f98a4942b59b721895556875c.js"></script><script src="data-parts/000016-f25d989f047d8d37580f992beb89edae30d7cd927a103b5ec833d8eda2e761df.js"></script><script src="data-parts/000017-860b7e25b6e73795e8b02a9d643067d3f367bfaef4b68ea0955dedf66ea93c24.js"></script><script src="data-parts/000018-7af8c389d7dd5f1363d3c1fafa90e953b3d36bdea393acae00548d973ed38d5c.js"></script><script src="data-parts/000019-4885b8c48bdf1e6d5d2de08bd3e5898384ffefd96c6168680edd7c2725b11a22.js"></script><script src="data-parts/000020-35f5a3876f2c3dd1c0b5a78dca577e8d1a4fc0058f26983189a1afccd6444623.js"></script><script src="data-parts/000021-be1e78c2c8d047572e2f703cf920d1240a022c48069e65d047a68eacb5f05971.js"></script><script src="data-parts/000022-c5bdd54958cbc7f401fcb08345089fa03e740d3f218475ab389cffc1c5156c20.js"></script><script src="data.js?v=6f42e7aa167b"></script>
+  <script src="../../_assets/e50fe18299fa35ae46841ec0423e4a7ab102db1cfd055c82f3f11abb6dfee469.js"></script>
+  <script src="../../_assets/d3f4bbc4614c27f9701c1d1ae4ada400f9df05d7b70928384c0e1eef07b23a15.js"></script>
+  <script src="../../_assets/804886b0742ce97802fe6ea2bcb59b82bb4e34f6bb6b83184d85f6666395f305.js"></script>
+  <script src="../../_assets/235af9233ca29da81483516bc0e6f54d8e829e0fc6f76f6116886d1179f5154a.js"></script>
+</body>
+</html>

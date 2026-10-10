@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>StockOps · 个股研究</title><link rel="icon" href="data:,"><link rel="stylesheet" href="stock-analysis.css?v=a5def2b2ca89"></head>
+<body>
+<header><a class="brand" href="dashboard.html">StockOps <span>个股研究</span></a><nav aria-label="返回工作区"><a href="dashboard.html?workspace=research">每日研究</a><a href="dashboard.html?workspace=candidates">候选池</a><a href="dashboard.html?workspace=watchlist">自选股</a></nav></header>
+<main>
+<section class="hero"><small>独立研究 · 不参与推荐评分</small><h1>一只股票，三种可能。</h1><p>先看事实和形态，再看触发条件。不是让预测替你做决定。</p>
+<form id="analysis-form"><label for="analysis-code">股票代码</label><div class="input-row"><input id="analysis-code" name="code" placeholder="600519 或 000001.SZ" maxlength="12" autocomplete="off" required><button type="submit">分析</button></div><label for="analysis-choice">或从本次股票中选择</label><select id="analysis-choice"><option value="">选择自选或候选股票</option></select></form>
+<p id="analysis-status" role="status" aria-live="polite">请输入股票代码。</p><p class="muted">静态页面使用本次冻结数据；任意新代码可通过本地独立服务查询，或运行单股 CLI 生成报告。不会调用推荐、AI 或交易接口。</p></section>
+<section id="analysis-result" hidden>
+<div class="identity"><div><small>证据快照</small><h2 id="analysis-name"></h2><p id="analysis-source"></p></div><strong id="analysis-price"></strong></div>
+<ul id="analysis-warnings" class="warnings"></ul>
+<nav class="analysis-section-nav" aria-label="个股研究页内导航"><a href="#analysis-chart-section">主图</a><a href="#analysis-level-section">关键位</a><a href="#analysis-risk-section">风险</a><a href="#analysis-scenario-section">情景</a><a href="#analysis-history-section">历史</a><a href="#analysis-evidence-section">证据</a></nav>
+<section id="analysis-chart-section" class="panel"><div class="heading"><h2>价格结构与量能</h2><div id="analysis-ranges" role="group" aria-label="图表范围"><button type="button" data-bars="66" aria-pressed="true">3月</button><button type="button" data-bars="252" aria-pressed="false">1年</button><button type="button" data-bars="0" aria-pressed="false">全部</button></div></div><div class="analysis-chart-stage"><div id="analysis-chart" class="chart" role="img" aria-label="前复权日 K 线、MA20、MA60、成交量及选中价格区域"></div><div id="analysis-price-band" class="analysis-price-band" role="button" tabindex="0" aria-label="返回选中的关键价格区域卡片" hidden></div><p id="analysis-chart-status" role="status">请选择股票。</p></div><div id="analysis-chart-level" class="chart-level" aria-live="polite" hidden><span id="analysis-chart-level-text"></span><div class="chart-level-actions"><button id="analysis-level-previous" type="button">上一个</button><button id="analysis-level-next" type="button">下一个</button><button id="analysis-chart-level-clear" type="button">清除高亮</button></div></div><p id="analysis-chart-note" class="muted"></p><p id="analysis-price-basis-note" class="price-basis-note"></p><div id="analysis-indicators" class="metrics"></div></section>
+<section class="panel"><h2>现在是什么形态？</h2><div id="analysis-patterns" class="patterns"></div></section>
+<section class="panel"><h2>趋势、波动与流动性</h2><div id="analysis-context" class="metrics"></div><ul id="analysis-diagnostics"></ul></section>
+<section id="analysis-level-section" class="panel"><div class="heading"><div><h2>关键支撑、阻力与破位确认</h2><p id="analysis-level-summary" class="muted"></p></div></div><p id="analysis-level-method" class="muted"></p><div id="analysis-levels" class="patterns level-grid"></div><details id="analysis-more-levels" class="more-levels"><summary id="analysis-more-levels-summary"></summary><div id="analysis-secondary-levels" class="patterns level-grid"></div></details></section>
+<section id="analysis-risk-section" class="panel"><h2>止盈止损与风险计划</h2><p id="analysis-risk-status" class="warnings"></p><div id="analysis-risk" class="metrics"></div><ul id="analysis-risk-details"></ul></section>
+<section id="analysis-scenario-section"><div class="heading"><h2>多周期条件情景</h2><label>观察周期 <select id="analysis-horizon" aria-label="情景周期"></select></label><span class="muted">条件分支不互斥，未来概率未校准</span></div><div id="analysis-scenarios" class="scenarios"></div><p class="muted">支撑阻力为历史冻结区域；历史收益分位仅描述过去，不是未来置信区间。所有价位均为前复权研究坐标，不是下单指令。</p></section>
+<details id="analysis-history-section" class="panel mobile-collapsible" open><summary>历史相似形态摘要与样本</summary><h2>历史上，类似形态之后怎样？</h2><p id="analysis-method"></p><p id="analysis-sample-warning" class="warnings"></p><div id="analysis-statistics" class="statistics"></div><div id="analysis-analogs" class="analogs"></div></details>
+<details id="analysis-evidence-section" class="panel mobile-collapsible" open><summary>八维证据覆盖与资料缺口</summary><h2>八维证据与资料缺口</h2><div id="analysis-coverage" class="metrics"></div><div id="analysis-evidence" class="patterns"></div><p id="analysis-evidence-excluded" class="muted"></p><p class="muted">未知可知时间、陈旧和冲突证据不参与方向判断；资料缺失不等于没有风险，支持证据也不是因果证明。</p></details>
+<section class="panel"><h2>下一步观察清单</h2><ul id="analysis-watchlist"></ul></section>
+<section class="panel"><h2>做决定前，再核对</h2><ul><li>计划买入：确认突破或回踩，定义失效条件，计算可承受的亏损。</li><li>核对公司公告、财务质量、估值、解禁与行业/大盘环境；价量形态不覆盖这些信息。</li><li>数据陈旧、停牌或历史样本不足时，降低对技术结论的依赖。</li></ul><p id="analysis-disclaimer"></p></section>
+</section>
+</main><footer>StockOps · 独立个股研究 · 可复现的条件推演，不是确定性预测</footer>
+<script src="../../_assets/de49082f0591a7da552fecf30aa135ea64230ffa24e23ef4c85efce8e0e64588.js"></script><script src="stock-analysis-data.js?v=b3126bf85964"></script><script src="stock-analysis.js?v=3295909b6ff1"></script>
+</body></html>
