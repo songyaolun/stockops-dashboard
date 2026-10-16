@@ -1,0 +1,1 @@
+window.__STOCKOPS_DATA_PARTS__=window.__STOCKOPS_DATA_PARTS__||[];if(window.__STOCKOPS_DATA_PARTS__.length!==7)throw new Error("stockops data incomplete: expected 7 parts, got "+window.__STOCKOPS_DATA_PARTS__.length);window.__STOCKOPS_DATA__=JSON.parse(window.__STOCKOPS_DATA_PARTS__.join(""));delete window.__STOCKOPS_DATA_PARTS__;
