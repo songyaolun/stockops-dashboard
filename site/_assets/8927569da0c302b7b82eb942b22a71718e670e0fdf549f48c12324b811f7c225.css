@@ -1,0 +1,16 @@
+.board-observation { padding: 20px; border: 1px solid #d8dee3; background: #fff; color: #161a1d; min-width: 0; margin-block: 16px; overflow-wrap: anywhere; }
+.board-observation h2 { margin: 0 0 12px; font-size: 20px; }
+.board-observation { scroll-margin-top: 84px; font-variant-numeric: tabular-nums; }
+.board-observation :is(a,select,summary) { touch-action: manipulation; }
+.board-observation a:hover { text-decoration-thickness: 2px; }
+.board-observation p { line-height: 1.65; margin: 10px 0; }
+.board-observation a { color: #276f9b; display: inline-block; margin: 6px 12px 6px 0; text-decoration: underline; }
+.board-observation details { margin-block: 12px; }
+.board-observation summary { cursor: pointer; padding-block: 10px; line-height: 1.5; }
+.board-observation select { display: block; width: 100%; max-width: 100%; min-height: 44px; margin-top: 8px; color: inherit; background: inherit; border: 1px solid #8b989f; font: inherit; }
+.board-observation :is(a,select,summary):focus-visible { outline: 3px solid #276f9b; outline-offset: 3px; }
+.observation-evidence { padding-block: 10px; border-bottom: 1px solid #d8dee3; }
+.board-research-page .board-observation { background: #101810; color: #f1f5f1; border-color: #405040; }
+.board-research-page .board-observation a { color: #b9e88b; }
+.board-research-page .board-observation :is(a,select,summary):focus-visible { outline-color: #b9e88b; }
+@media (max-width: 600px) { .board-observation { padding: 14px; } }

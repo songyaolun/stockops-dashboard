@@ -1,0 +1,343 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StockOps 今日看板</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../../_assets/a8daca474bd04ccdbcfddd8cc4cfbb8f7eda26ca3e27b9b4b33d56fe5ee228a7.css">
+  <script src="../../_assets/de49082f0591a7da552fecf30aa135ea64230ffa24e23ef4c85efce8e0e64588.js"></script>
+  <link rel="stylesheet" href="../../_assets/8927569da0c302b7b82eb942b22a71718e670e0fdf549f48c12324b811f7c225.css">
+<script src="../../_assets/262cb585d2ab0bcef23209c13b7bbd750c0fd15c2ee0b1ba5d903cc5a959c2c5.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#today-workspace">跳到主要内容</a>
+  <header class="topbar">
+    <div class="brand-block">
+      <div class="brand-mark" aria-hidden="true">↗</div>
+      <div>
+        <div class="brand-line">
+          <strong>StockOps</strong>
+          <span id="task-type" class="task-badge">DAILY</span>
+        </div>
+        <div id="run-meta" class="run-meta">正在读取运行信息…</div>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <div id="source-popover" class="source-popover">
+        <button id="source-summary" class="source-summary" type="button"
+                aria-describedby="source-tooltip" aria-expanded="false">
+          <span id="source-health-dot" class="health-dot"></span>
+          <span>
+            <strong id="source-health-label">数据源检查中</strong>
+            <small id="source-health-count">— / — SOURCES</small>
+          </span>
+        </button>
+        <div id="source-tooltip" class="source-tooltip" role="tooltip">
+          <div class="tooltip-title">
+            <strong>数据源明细</strong>
+            <span id="source-tooltip-total">—</span>
+          </div>
+          <div id="source-tooltip-list" class="source-tooltip-list"></div>
+        </div>
+      </div>
+      <a class="archive-button" href="stock-analysis.html">个股研究</a>
+    </div>
+  </header>
+
+  <nav class="system-navigation" aria-label="StockOps 全局导航">
+    <div class="workspace-tabs" aria-label="StockOps 工作区">
+      <button type="button" data-workspace="today" aria-pressed="true">今日看板</button>
+      <a data-business-link="board_research" href="board-research.html">行业与题材</a>
+      <button type="button" data-workspace="review" aria-pressed="false">历史复盘</button>
+    </div>
+  </nav>
+
+  <section id="ranking-identity-warning" class="stage-alert"
+           role="alert" hidden>
+    <span aria-hidden="true">!</span>
+    <p id="ranking-identity-warning-text">排名快照身份不匹配。</p>
+  </section>
+
+  <main id="review-workspace" class="workspace-view" hidden>
+    <section class="intro">
+      <div>
+        <h1>历史复盘</h1>
+        <p>查看历史榜单、入榜后续观察与冻结模拟账本。</p>
+      </div>
+      <span id="last-updated" class="last-updated"></span>
+    </section>
+
+
+    <section id="return80-performance" class="return80-panel" aria-label="模拟组合表现">
+      <h2>模拟组合表现</h2><p id="return80-performance-summary">本次快照未提供模拟账本。</p>
+      <p id="return80-performance-basis"></p>
+    </section>
+    <section id="review-observation" class="return80-panel" aria-label="入榜后续观察"></section>
+
+    <section id="candidate-comparison" class="candidate-comparison" aria-labelledby="comparison-title">
+      <div class="comparison-heading">
+        <div>
+          <h2 id="comparison-title">↕ 榜单变动</h2>
+          <small id="comparison-subtitle">正在读取同任务历史榜单…</small>
+        </div>
+        <div class="comparison-periods" role="group" aria-label="选择榜单对比周期">
+          <button type="button" data-comparison-period="previous" aria-pressed="true">昨日</button>
+          <button type="button" data-comparison-period="week" aria-pressed="false">近一周</button>
+        </div>
+      </div>
+      <div id="comparison-empty" class="comparison-empty" hidden></div>
+      <div id="comparison-content" class="comparison-content">
+        <div class="comparison-summary">
+          <div class="comparison-metrics" role="group" aria-label="榜单变动概览">
+            <button type="button" data-comparison-filter="" aria-pressed="true">
+              <strong id="comparison-current-count">0</strong><span>今日在榜</span>
+            </button>
+            <button type="button" data-comparison-filter="entered" aria-pressed="false">
+              <strong id="comparison-entered-count" class="accent-text">0</strong><span>今日新进</span>
+            </button>
+            <div>
+              <strong id="comparison-exited-count" class="warning-text">0</strong><span>今日调出</span>
+            </div>
+            <button type="button" data-comparison-filter="retained" aria-pressed="false">
+              <strong id="comparison-retained-count">0</strong><span>连续在榜</span>
+            </button>
+          </div>
+          <div class="comparison-net">
+            <span id="comparison-net-label">净变化</span>
+            <strong id="comparison-net-change">0 只</strong>
+          </div>
+        </div>
+        <div class="comparison-lists">
+          <section class="comparison-list is-entered" aria-labelledby="comparison-entered-title">
+            <button class="comparison-list-heading" type="button"
+                    data-comparison-list-toggle="entered" aria-expanded="false">
+              <h3 id="comparison-entered-title">今日新进</h3>
+              <span id="comparison-entered-label">0 只</span>
+            </button>
+            <div id="comparison-entered-list" class="comparison-stock-list"></div>
+          </section>
+          <section class="comparison-list is-exited" aria-labelledby="comparison-exited-title">
+            <button class="comparison-list-heading" type="button"
+                    data-comparison-list-toggle="exited" aria-expanded="false">
+              <h3 id="comparison-exited-title">今日调出</h3>
+              <span id="comparison-exited-label">0 只</span>
+            </button>
+            <div id="comparison-exited-list" class="comparison-stock-list"
+                 role="region" tabindex="0" aria-label="今日调出股票列表"></div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section id="history-panel" class="history-panel">
+      <div class="section-heading">
+        <div class="history-heading-text">
+          <h2>历史报告</h2>
+          <small id="history-scope">仅显示本时段的历史运行，按交易日汇总</small>
+        </div>
+        <div class="history-heading-actions">
+          <span id="history-count">0 天 · 0 次运行</span>
+          <button id="history-mobile-toggle" class="mobile-section-toggle" type="button"
+                  aria-expanded="false" aria-controls="history-days">展开</button>
+        </div>
+      </div>
+      <div id="history-days" class="history-days"></div>
+    </section>
+
+  </main>
+
+  <main id="today-workspace" class="workspace-view candidate-workspace" hidden>
+    <section class="candidate-intro">
+      <div>
+        <small>盘后研究</small>
+        <h1>今日看板</h1>
+        <p>按证据组、组合规则与风险筛选；所有筛选保持唯一生产排名，点击股票查看技术图。</p>
+      </div>
+      <span id="candidate-workspace-count">0 只候选</span>
+    </section>
+
+    <section id="return80-summary" class="return80-panel" aria-labelledby="return80-title" hidden>
+          <h2 id="return80-title">每日榜单 · 冻结收益策略</h2>
+      <p id="return80-date"></p><p id="return80-count"></p><p id="return80-market"></p>
+      <p id="return80-ranking-rule"></p><p id="return80-scope"></p>
+      <p id="return80-broker-status" class="return80-broker-status" role="status" hidden></p>
+      <section id="return80-paper" aria-labelledby="return80-paper-title" hidden>
+        <h3 id="return80-paper-title">模拟组合今日行动</h3>
+        <p id="return80-paper-account"></p>
+        <p id="return80-paper-official" hidden></p>
+        <p id="return80-paper-assumption"></p>
+        <details><summary>查看持有与换仓规则</summary><p id="return80-paper-rule"></p></details>
+        <details><summary id="return80-holdings-summary">查看模拟持仓处理与止盈止损</summary>
+        <ul id="return80-paper-holdings"></ul></details>
+        <h4 id="return80-buy-heading">下一交易日条件买入</h4><p id="return80-buy-budget"></p>
+        <ul id="return80-paper-buys"></ul>
+        <details><summary>查看今日模拟成交与取消</summary><ul id="return80-paper-executions"></ul></details>
+        <p id="return80-paper-execution-rule"></p>
+      </section>
+    </section>
+
+    <section id="ranking-summary" class="status-band"
+             aria-label="生产排名快照" hidden>
+      <article><span>排序快照</span><strong id="ranking-snapshot-id">—</strong><small id="ranking-version">—</small></article>
+      <article><span>信号 / 截止</span><strong id="ranking-signal-date">—</strong><small id="ranking-as-of">—</small></article>
+      <article><span>准入</span><strong id="ranking-admission-counts">—</strong><small>allow / watch / reject</small></article>
+      <article><span>六家族独有新增</span><strong id="ranking-family-only-count">—</strong><small id="ranking-coverage">—</small></article>
+      <article><span>降级 / 最高风险</span><strong id="ranking-recall-status">—</strong><small id="ranking-highest-risk">—</small></article>
+    </section>
+
+
+    <section class="research-workspace">
+      <aside class="candidate-panel">
+        <div class="panel-heading">
+          <div><h2>生产排名候选池</h2><small id="candidate-count">0 SYMBOLS</small></div>
+        </div>
+        <p id="sector-heat-reliability-note" class="sector-heat-reliability-note" hidden></p>
+        <div class="candidate-columns" aria-hidden="true"><span>股票</span><span>策略信号</span><span>全局名次 · 排名分</span></div>
+        <div id="candidate-list" class="candidate-list"></div>
+      </aside>
+
+      <section class="stock-panel" aria-live="polite">
+        <div class="stock-overview">
+          <div class="stock-identity">
+            <div><h2 id="stock-name">暂无数据</h2><span id="stock-code"></span> <a id="candidate-analysis-link" href="stock-analysis.html">分析这只股票 →</a></div>
+            <p id="stock-strategies">未选择候选股</p>
+          </div>
+          <dl class="quote-summary">
+            <div><dt>最新收盘</dt><dd id="latest-close">—</dd></div>
+            <div><dt>1 日涨跌幅</dt><dd id="change-1d">—</dd></div>
+            <div><dt>5 日涨跌幅</dt><dd id="change-5d">—</dd></div>
+            <div><dt>生产名次 · 排名分</dt><dd id="selected-score" class="accent-text">—</dd></div>
+          </dl>
+        </div>
+
+        <section id="return80-plan" class="return80-panel" aria-labelledby="return80-plan-title" hidden>
+          <h3 id="return80-plan-title">买入条件与退出计划</h3>
+          <p id="return80-entry-status"></p>
+          <dl class="return80-prices">
+            <div><dt>收盘参考</dt><dd id="return80-close">—</dd></div>
+            <div><dt>最高追价参考</dt><dd id="return80-entry">—</dd></div>
+            <div><dt>止盈触发基准</dt><dd id="return80-profit">—</dd></div>
+            <div><dt>止损触发基准</dt><dd id="return80-stop">—</dd></div>
+          </dl>
+          <p>仅下一交易日开盘考虑买入，高开超过5%不追；有现金和名额才买，已有持仓不重复买，卖出实际成交后才使用释放资金。</p>
+          <p>未成交时，退出点位待实际成交后确定：止盈=实际成交价×1.045，止损=实际成交价×0.92；已有模拟持仓按持仓明细执行。收盘触发后下一可成交开盘退出，最多30个交易日。</p>
+          <small>遵守T+1；停牌、跌停和跳空可能使亏损超过8%。除权除息调整比较基准。此页面不监控个人持仓或自动下单。</small>
+        </section>
+
+        <div class="chart-toolbar">
+          <span class="period-badge">日 K</span>
+          <div id="chart-ranges" role="group" aria-label="图表范围">
+            <button type="button" data-bars="66" aria-pressed="true">3月</button>
+            <button type="button" data-bars="252" aria-pressed="false">1年</button>
+            <button type="button" data-bars="0" aria-pressed="false">全部</button>
+          </div>
+          <div id="chart-filters">
+            <fieldset id="indicator-filters"><legend>主图指标</legend></fieldset>
+            <fieldset id="subchart-filters"><legend>副图指标</legend></fieldset>
+            <span id="event-note" class="event-note" hidden></span>
+            <details id="event-menu" class="event-menu" hidden>
+              <summary id="event-summary">事件节点</summary>
+              <fieldset id="event-filters"><legend>事件类型</legend></fieldset>
+            </details>
+          </div>
+        </div>
+        <div class="chart-stage">
+          <div id="chart" role="img" aria-label="所选股票日 K 线图"></div>
+          <p id="chart-status" class="chart-status" role="status" hidden></p>
+        </div>
+      </section>
+    </section>
+
+    <details class="secondary-evidence"><summary>策略筛选与空仓情景</summary>
+      <details id="return80-allocation" hidden><summary>空仓情景与策略说明（不是本组合买单）</summary>
+        <h3 id="return80-priority"></h3>
+        <p id="return80-planned-weight"></p>
+        <p id="return80-market-rule"></p>
+        <p id="return80-assumption"></p>
+        <p id="return80-not-planned"></p>
+        <p id="return80-cancel-rule"></p>
+      </details>
+      <small id="return80-sample"></small>
+    <section class="strategy-observer" aria-labelledby="strategy-observer-title">
+      <div class="strategy-observer-heading">
+        <div>
+          <h2 id="strategy-observer-title">精细筛选</h2>
+          <small id="strategy-filter-summary" aria-live="polite">全部候选</small>
+        </div>
+        <div class="strategy-heading-actions">
+          <div class="strategy-total"><span>策略 · 规则</span><strong id="strategy-total">0 · 0</strong></div>
+          <button id="strategy-mobile-toggle" class="mobile-section-toggle" type="button"
+                  aria-expanded="false" aria-controls="strategy-filter-content">展开</button>
+        </div>
+      </div>
+      <div id="strategy-filter-content">
+        <div class="observer-filter-band">
+          <span class="observer-filter-label">组合视图</span>
+          <div id="selection-rule-filters" class="strategy-filters rule-filters"
+               role="group" aria-label="按组合规则筛选候选股"></div>
+        </div>
+        <div class="observer-filter-band">
+          <span class="observer-filter-label">底层策略</span>
+          <div id="strategy-filters" class="strategy-filters"
+               role="group" aria-label="按命中策略筛选候选股"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="candidate-risk-filter" aria-labelledby="candidate-risk-filter-title">
+      <div>
+        <strong id="candidate-risk-filter-title">证券风险</strong>
+        <small>红色保留审计但不进入正式 AI；未知不等于安全。</small>
+      </div>
+      <div id="candidate-risk-filters" class="candidate-risk-filters"
+           role="group" aria-label="按证券风险等级筛选候选"></div>
+    </section>
+
+    </details>
+    <details class="secondary-evidence"><summary>公司、证券风险与数据质量</summary>
+    <section id="candidate-security-risk-panel" class="candidate-security-risk-panel"
+             aria-label="所选候选的独立风险识别证据">
+      <p class="company-panel-empty">选择候选股后显示独立风险识别结论。</p>
+    </section>
+
+    <section id="candidate-company-panel" class="company-decision-panel"
+             aria-label="所选候选公司的质量、估值、事件与风险">
+      <p class="company-panel-empty">选择候选股后显示公司质量与事件风险。</p>
+    </section>
+
+    <section id="candidate-leadership-panel" class="leadership-evidence-panel"
+             aria-label="所选候选股的板块龙头与非对称强度研究证据（仅供参考，不影响排序）">
+      <p class="leadership-panel-empty">选择候选股后显示龙头与相对强度研究证据。</p>
+    </section>
+
+    <section class="lower-grid">
+      <article class="opinion-panel">
+        <div class="opinion-lead">
+          <small>AI OPINION</small>
+          <h2>个股研究观点</h2>
+          <span>RISK FIRST</span>
+        </div>
+        <p id="stock-opinion">选择候选股后显示对应的 AI 观点。</p>
+      </article>
+
+      <section id="source-panel" class="source-panel">
+        <div class="section-heading"><h2>数据质量</h2><span id="source-panel-summary">—</span></div>
+        <div id="source-status" class="source-status"></div>
+      </section>
+    </section>
+    </details>
+  </main>
+
+  <footer>研究辅助，不构成投资建议。</footer>
+
+  <script src="data-parts/000000-569c38e3f7ca3da14ed125dd16d0b51360f8118e03219ea2477a8591eb20ad8e.js"></script><script src="data-parts/000001-80ce269796b77657b0c3582963c5fa2bcb7b7edccbc942c66584a59c49ede7a1.js"></script><script src="data-parts/000002-2791827086727a86c2262f4c1e9ece2c697fdaec443bf2cac416133850f87883.js"></script><script src="data-parts/000003-16d78a578fa01ce9a738668cb146e80491b8b16cc2fc9b89841d0eabc3d7ef6c.js"></script><script src="data-parts/000004-ad88e1429900e451839302006969dc2ea5dedde6376b453cdd67caa71287f2ac.js"></script><script src="data-parts/000005-77883967ebd4127afe6c95622791c5f89f8406edf8dee8dc31221fb590f47e2d.js"></script><script src="data-parts/000006-620a3e6ab2081c800f996f9a5a3161af3a3267b3bedad814992846631b07189f.js"></script><script src="data-parts/000007-f095e3b579a31257518cb7b474906814c206f2475b67850e0af53cc2293c05c0.js"></script><script src="data-parts/000008-ad447567ac732b1206f718579b8b3ef283f685bdd160b8fd9e43e82e8479f0d8.js"></script><script src="data-parts/000009-b52b166bb7cb9223701873d35e79122f61b773a9da47b0be1ac2a34ce13f0a18.js"></script><script src="data-parts/000010-ad30eb60fcec81fd38cbbfa6da2da16cc0b6075627d900e54a2ab2a9e0706a80.js"></script><script src="data-parts/000011-90bff206c782c97967bf515680645bd40b931c2546c07f89331eca2a7b275450.js"></script><script src="data-parts/000012-eeb65b0cdb148e527a3d3958161763ccb52cc2ec87ef94291b944fae21558acf.js"></script><script src="data-parts/000013-2a3eac2e908fa22de49834fa542f0813b8310141b7f27df282a3b476c663ee88.js"></script><script src="data-parts/000014-c65e105f7b6b72a38374a9be0dec1c341dea6d6f7a8fcbfa65d934d67bafa85a.js"></script><script src="data-parts/000015-448ca556ed42212c82d2ccb4293d370a6232dacdcda6a464a540d0a20d3aa65d.js"></script><script src="data-parts/000016-f2a2aff9cf4ccc54179d622ea41522a598d757ae89c249ecff3dcad039804cd5.js"></script><script src="data-parts/000017-9d6722e39ed269e04f19c57b6f8043813234fe668124827c327edf16f95113ae.js"></script><script src="data-parts/000018-b26c66bf032dd551be842cc0420054c4a9a707388a2d284190ae95608b5a41c6.js"></script><script src="data-parts/000019-0c2e91fd32e59dd7fc273ad09d5ba404a636a0c63b8cd84df3759fa427d3623d.js"></script><script src="data-parts/000020-b15151f543308888903679414d114a87a8eb7598622bec043a12357ce1bc7180.js"></script><script src="data-parts/000021-8fb0b606aa66055bed55ded343c6e973301918980efced3cec7306890a7c4a69.js"></script><script src="data-parts/000022-f7550427cdb18d12c465355ce4702c8537857d810bb0a7ae0992275360f73f3d.js"></script><script src="data-parts/000023-93c480b0de5374faad8d4041b319475b4c9565bc58bff2fe7ac8d875f7f9edc5.js"></script><script src="data-parts/000024-4fb164851fed053c09f145eec8ab5e63003da227dbffb8b82d2eb16fc99bb78b.js"></script><script src="data-parts/000025-1af6b60eeb8f53453a1b7accd0ce4e3cf165d54c573fd2c6a316ef26f59ac382.js"></script><script src="data-parts/000026-4544618e5da34a2d84ae4b12dbfed6480bff96910b9a42a2edc241d680835a60.js"></script><script src="data-parts/000027-5896978c66b90368badb46dd494914f99395fc06441230e1ab7b1c8d5c822b8e.js"></script><script src="data-parts/000028-7d9a5f5ea06e925a59269e85afc7d7d67365106226b0ef884af72821f6f0a8bd.js"></script><script src="data-parts/000029-5b59818663440297e6660983889795846a993ca3f1e74bed6978aeaf72f925b8.js"></script><script src="data-parts/000030-15c792e461cdc3509be82f917632135513480ad1999d71e72bb7395341f6c240.js"></script><script src="data-parts/000031-8a699bf3b970baa7ab7cca790cc0faaf2d5d0b33e18ac5fb836352984475cc4c.js"></script><script src="data-parts/000032-804d0bcde9c7146e149552795c7ec646c6dffc8b1f7197745c1c067354366bd7.js"></script><script src="data-parts/000033-f9d7ade1a8b9e0f669934f680c2cba597dbf6441aee828d77a6f10cee28dd28b.js"></script><script src="data-parts/000034-e84c6c0330063faf4729ff7e20f58ae7a77401819c62b0f761d0a1ae9c939cd1.js"></script><script src="data-parts/000035-5db232e4fc6292b74574a97977b90f880f57e5d03243b2570fc2fef573ab5578.js"></script><script src="data-parts/000036-0d4525a0aba4729b815ca5098f5690ebc46a94cf6a3ad722e1650bac49a7acfe.js"></script><script src="data-parts/000037-91b4b0853657962c6a59cf1cbdaf59275ed1652ae54c13651e4f429e09affdc8.js"></script><script src="data-parts/000038-193ae693231265de1fb401f99e7a691c8f2f358efa481b705c80912c4b361c41.js"></script><script src="data-parts/000039-64830bf0bc6065a399f200bcd17c6e7fed8475be17a3305e96f8603a3afe3058.js"></script><script src="data-parts/000040-2e6a66161b0654c6e58432da22a2e353b8194bfff57e14ec2dae65393fafbe94.js"></script><script src="data-parts/000041-68cd6d196affe566d007627410475d903c299406e0104ab08bf8a0526b043001.js"></script><script src="data-parts/000042-bdb1e5d4b7f2d710aefa876627a9e06c24a7c758f5441caeb145270dc1d5f0ec.js"></script><script src="data-parts/000043-8cf3d9d200e75001f109716498bc4c6f8bac2444eced74381da8c5982e38b31c.js"></script><script src="data-parts/000044-535df66972ccf79d5c9caf0934d90bf5412f25ca148c3245e7d51235f18c6804.js"></script><script src="data-parts/000045-3115edb1b3dcb35dcd4df348bf61bc1d6e539b6ed490c587cff166e3592839bb.js"></script><script src="data-parts/000046-ce2ae74a2879a80446c97615f4d4d385df320fb9ea4269bcb09b7578308d394b.js"></script><script src="data-parts/000047-d13fc210528beb5756e994b220d3c6a402127159637bfae7ce18739f0e45f83b.js"></script><script src="data-parts/000048-06c6dfe69bc43c80812c2da6f675e95b979239ca81cd21fa1449be0d9ab22e45.js"></script><script src="data-parts/000049-cb4e4a3237509189eb159ea1934a8578fe2b40fb46775290c5a418884dfb23b2.js"></script><script src="data-parts/000050-d9e87bb40074cb851b6739ca6bc1294e11b75a5bd69cf090a43980e13dcabf1c.js"></script><script src="data-parts/000051-0ea142ecc424016313fbc8aac1ac098cfabc941ab03b536c382422356229831e.js"></script><script src="data-parts/000052-9a4a6016d5087e1ce07a1281ebdb6109e4df33ffb6d1d2c28573d758ac0d8bf2.js"></script><script src="data-parts/000053-e89abdd652ba98df342c97008d906eca7973316025ffdd67fa1184fdbba612e0.js"></script><script src="data-parts/000054-bafd410c53b9ff381a352d94e48c90c5f15ae2e9fe523c3516e74e55e3f45817.js"></script><script src="data-parts/000055-dd4a231b2dcc8bcab68d5ceda528760d67056adf7801aba2f617ec38f7c3054c.js"></script><script src="data-parts/000056-e08a3fddd9470f66480695d1d933fa74d516f6563136a0641526656438086579.js"></script><script src="data-parts/000057-43b4f743e77da90c83e6f7893bb8b67669b4deefb1072eab0373067eab325c53.js"></script><script src="data-parts/000058-a084a519292fa96d3502112553e626a9af43cf371716534f31282ea5b85e3706.js"></script><script src="data-parts/000059-c60f18253731ddc4f005b11d6b7e646da1c3da8e381209eee12ed51d9937dd5a.js"></script><script src="data-parts/000060-ae9cca9c54c72ed749aad6cbdcfc2a59b040c1b66390cbea8f7c05b311303449.js"></script><script src="data-parts/000061-4943574bad4988a36687e4582c449536538558bf82735b04783c7cc2bfc253a8.js"></script><script src="data-parts/000062-4be04da14b997be0b37c6bf50142035bb74cdee34f66a2ac1d765b0333726d18.js"></script><script src="data-parts/000063-6a01a49eadcb59ec5ca9aad14df12628453e7f41f7bcb442c89f1f27863392a7.js"></script><script src="data-parts/000064-2dbea4873fe21473fc28609c38edc8c8622584127a158abf58db3cf9e1abcb39.js"></script><script src="data-parts/000065-80015375c3e2d88b83000bd9f80fe95b6169727428ae78fcfffe4819b9400875.js"></script><script src="data-parts/000066-5b1eeaccaaf3b6f0589dffeb557c13ae7a0c1a5ae8ccd99b0e890bfe4a596b73.js"></script><script src="data-parts/000067-a15300c896af11f19d89c0fffc53cb0f84115f11b8cbfb3d1b6198fb8e5db44b.js"></script><script src="data-parts/000068-63385d081f634e43118821090181128e694bfba34ed7811c5a56c3497dbdb281.js"></script><script src="data-parts/000069-12f85608cb6f618255b56967852e7a5d187b2c17db7c42f127c16fb7af59ecc3.js"></script><script src="data-parts/000070-c860751903a89ccc0ab9ecab25b34a08846b87579caa0d41c4cc5d087c759f53.js"></script><script src="data-parts/000071-2426bd71a7cc7b16ef8226f26d9dfb356d0a53465358a3a1aec2dcbfbb35c7c1.js"></script><script src="data-parts/000072-ec55c01205f9a4fb4780544142ca4c07856b3bdf7165d1a1c65b9c8e1ca95038.js"></script><script src="data-parts/000073-e7f9ba9c138216f386d306eece8d4d3b448a4950787a798a27429aa0499976e0.js"></script><script src="data-parts/000074-d7fdc9c5b6eae8a306537c99b41343b62dbbbfff2c1e39c32d4a81d9265a9d97.js"></script><script src="data-parts/000075-9a45301943cda7a7972caced150fd09c5094d52f6c825297fe8c2706056d9e7d.js"></script><script src="data-parts/000076-351721b31c913b388ca0f5a2b00f2e789f62caa98a6cbb29fa042d9455f0479b.js"></script><script src="data-parts/000077-659d2a0f34312942d65e1d80ff6ffa03be0c87f6119016f7fc380350f322a7a4.js"></script><script src="data-parts/000078-6b941a018243bf77d907d05026be773f19066c882f0be8617cbe5191c12b3628.js"></script><script src="data-parts/000079-2b1d2da8f400751cb591398033da0b1c66786832df91fcc31af45473c478a814.js"></script><script src="data-parts/000080-089bb12d7ea3e604397425e0afb3b49c484293f86c5856f7516899c5e87a990a.js"></script><script src="data-parts/000081-208d8153d71e8ec34da479ced8374412f7198b7eaf7b1696ee02928c674e90df.js"></script><script src="data-parts/000082-f2bbfdb484253080ee4351b8a353681e6ea432570ae34bc42055fd8968dcac88.js"></script><script src="data-parts/000083-9b71bac6eaa30b7c52351ab542aed8e0027205e1d730c2ff373fb36cf05066c9.js"></script><script src="data-parts/000084-39eccac65dd4c7627738d91bbe7e6a30b4643a5bce20bab14c4c33c3d5b7aef9.js"></script><script src="data-parts/000085-8bdff85dfa9fca9339d5997bd66cf89ab175c3e02fea5703b0deb1ed6d277b4b.js"></script><script src="data-parts/000086-1fc60728fc2cc64259a2e706dbb33a608f23bb91614155b1ffe5711779491b46.js"></script><script src="data-parts/000087-93a3aab26ffdf9b8b59a823fcd37a74665c8e34d33b0d6bb5b9f3ca955e4f091.js"></script><script src="data-parts/000088-b8ba77fdf941c72d222370fd732d93823af7aa3911970e10d1cfa28bcec7c4b3.js"></script><script src="data-parts/000089-b4d4d602b0c0846b224be0263f7f8cc302867d731aa8e1322d8550380ee1298f.js"></script><script src="data-parts/000090-f720c7b9d481c5de4a7a878cf73d170c205297f7703e0e1b4c6cfe8c2bc45cb6.js"></script><script src="data-parts/000091-04d414d2a89c56ec5296519f57ba5a5af30bb5ecba5b794a0a4d625305f4ec2e.js"></script><script src="data-parts/000092-ba1a50c7d2a48710d777735cc301309f7f543fefd1e1d323f730a1d130d0f33b.js"></script><script src="data-parts/000093-0024c3a456f31728c1626cd15928070be634de274b00317d75cd020ab129040a.js"></script><script src="data-parts/000094-6ca9236b5cc100d8b9d87a57ad45f2922e4b62c3c5880f3c7d55e9eb19678cd5.js"></script><script src="data-parts/000095-77cb8a716df02d9a2c57b47edae0de5809eec6c40663625815430bbd8aad8df6.js"></script><script src="data-parts/000096-fc27d539e2e3a0e90149dc71ccbc4ec9c01a743bc6bc9792071760eb4001b2fd.js"></script><script src="data-parts/000097-72d41a51eb5aeb83709c39c7cd2db8e7d09cd744b20621e1856bd853f35ed2bb.js"></script><script src="data-parts/000098-e57e4f4a49f454ad2a8319b2675dbbfa557ff7136f001cf72b079edc215f7d18.js"></script><script src="data-parts/000099-bf06bf1f7a54dfa6947db9cd286f22b17b18bf280030b6b3815d3015be500263.js"></script><script src="data-parts/000100-a59ad0d6cc3fe252d5a0183d7d11e1f57059595b4ccea8396f1d45c025e40a71.js"></script><script src="data-parts/000101-997bf7deaef97363277eaca42d082fbe4561ac4380e0a70fc1fe454953be5d5a.js"></script><script src="data-parts/000102-cd1d8f48932ad713b25f374d1c7d56a44cd6bbe604b3896550e06940973688a1.js"></script><script src="data-parts/000103-20401eae1cf91cf7f5aa620924ca243bc3848404aaa4e79284e23638130528b6.js"></script><script src="data-parts/000104-62fcf7bf76c939ae40886b2e6b7592426b158c0d713f3a44ce7f39b8f181fa6b.js"></script><script src="data-parts/000105-eec6860190d4d0dad4000ec5265c32e0e5b7849263d4f5f3daeee491c6520370.js"></script><script src="data-parts/000106-22e6ca5b62a4d6c026410e322723c3765d0f173b9fe8bb28ef84872d29c7fb7b.js"></script><script src="data-parts/000107-bd2e03c2d5761763eab65716f62192b646b5152a8e1fe4f1d0af776fff1d074e.js"></script><script src="data-parts/000108-82427abcc39a7d4c2a909bbdad6b4a1d2499847a1dee9bbd1fa56a0842863df4.js"></script><script src="data-parts/000109-e3d70ca696571c83579aa8d90d404cf7c6f837984a793739afd8a2a967bdbfbc.js"></script><script src="data-parts/000110-527157ba6748d61cac77995c16e4bc1f516d1334d1fd56c13cf30f9a951c526b.js"></script><script src="data-parts/000111-63221894e85ff2c60945f00f66c50ce6731b4063bafe7a76c83e9fa21f09d934.js"></script><script src="data-parts/000112-93e174c2a6d4a2cde4e933e55160c86801e38aa558c4e471375bbe5c8bdb6582.js"></script><script src="data-parts/000113-0a13d9449ba196c36481a1d60072c764f30a9d92ce2c299cfbe6138a3cd4006a.js"></script><script src="data-parts/000114-c6c56952c20d3872ccf7d25066ce2c629810db4d494df06e31c0ea881fb29fd1.js"></script><script src="data-parts/000115-381550fee08977cd81a542a49a3a0ec54622cc3ab105d5577f32afa9302d8bd3.js"></script><script src="data-parts/000116-e42e7723f9b872df207ec2e1965353fbafea0ef17e91ab026cabb99ae1e4e447.js"></script><script src="data-parts/000117-d5de827e0d07dd81d7f1ebbc22a02b8d1961a948c8da3ef1bc49ab72bfa676be.js"></script><script src="data-parts/000118-b1abf8b6842614220048c163c1393ac8aea1931518459cf9b810c564bf17f9fd.js"></script><script src="data-parts/000119-1db5312e02f752c798c283a72e7cba1e32071f7046820a47b78c7df47827009e.js"></script><script src="data-parts/000120-41a707edbebd8e502a5e4a2f150fdfa2b4b09bdcb8d4b0475e380df71f3a5cf1.js"></script><script src="data-parts/000121-af651e24b2966f1a544de8df64422182682b9d0be5836d34de489e15fd69a680.js"></script><script src="data-parts/000122-483a8e6f610329af20ffc6159d8583f2a9660405299b6e5e37df04c508a74f0a.js"></script><script src="data-parts/000123-18460d4bd512803763a6dd378274f3f69437e647ebf9c828b2d11ce5e08669cc.js"></script><script src="data-parts/000124-11e303d3dfcaa913ff209ad627574fde13fbec7b7901e382b70c172ce569f3bc.js"></script><script src="data-parts/000125-d212f08f7d82bbd9ee58228835eba3923488b74fa0e8fa1f55d14a616edf21f3.js"></script><script src="data-parts/000126-528516b7809a3b9784d6d2e04cccbce5a7a779a91272b32eeb8bbb35b6c2ee98.js"></script><script src="data-parts/000127-2641fb5440f6c8e0b156c562f217c570c2a6800e7da18761309de4747ce1c93a.js"></script><script src="data-parts/000128-ca3d38ff65cd219f35eb6e59355945a6677175a7ffe6ef7acf94bf22f6dbbf62.js"></script><script src="data-parts/000129-136daad79c4a002cc266a3cca01ff891179690ec809ba1c8c12f1f6363c2665e.js"></script><script src="data-parts/000130-61c5bc2a1fab821da90e3d7b42847463213a6a31fba8728d000bbc94b780ae95.js"></script><script src="data-parts/000131-3c649733741356f287c8e3d23d0335e637f32f5afcd1c708be06bf29f3968b5a.js"></script><script src="data-parts/000132-21fb06e73d92a8521e318fd2e2b99bdf4d0c6742a4d5b21c32d85dccf622a3fb.js"></script><script src="data-parts/000133-05eb178b7e7c9e16b8f22dcd5590834f45736a8940a01e9ee2e6ca4355017af2.js"></script><script src="data-parts/000134-d3d57a032948ff0ea904edc23f3b7b89ad12627df320b7f510995fdf47b0d5a1.js"></script><script src="data-parts/000135-14436d04a3f18e541650108c975d75218b5fd1ef99d8d9c655d738e36db8dbb1.js"></script><script src="data-parts/000136-e66aac99d5b85e213b14544d90954026384cadc21da62787ee8698b9ee726ae9.js"></script><script src="data-parts/000137-1c01717548396a96004ba32e3af5cba6d710837a1473f7aa56a9f9cfeb25e6e6.js"></script><script src="data-parts/000138-35b2f9a86fabbeb7e5e99a573149113d0aa3d2af6100280ff6d3c2cd83727366.js"></script><script src="data-parts/000139-ebedfdb3f3cac35d839fe1cebc9e4591eae552c87af2c8d42ac8bb7d4d3942e3.js"></script><script src="data-parts/000140-e452912d0e1d092158f6cb46906ca356ef1be9a37266f065607f7ceb8b83a651.js"></script><script src="data-parts/000141-71ec7254c9c6702360b3edbaf58b8d7a64afaee1b31c57cb48c0cf2e56cecc12.js"></script><script src="data-parts/000142-5cba6ed288555c83aec3ac4ad0177aed6584a295d2d26f1d5597533209808500.js"></script><script src="data-parts/000143-6426f88052d25802af4934e9065b55143dc7005e7315c15c84e7df072a2edcc5.js"></script><script src="data-parts/000144-57231ca6b292bd7faef3d12be626b0335c539addd11f7fec345d0d642c8da8da.js"></script><script src="data-parts/000145-3f90d0bf167356d39428b0d08f076155bd447372b6324c43232159c511aba03a.js"></script><script src="data-parts/000146-3795125fe535854aee3ac50c4c523b2abb67bc42dead75a13dbfdd39934df33c.js"></script><script src="data-parts/000147-142329d37da6c876e3d22473f2f3dd60fcb87afb79d567681d7fc2d5d824d98a.js"></script><script src="data-parts/000148-dfacb97f841eea3b2242d6b2a777e75f5a7a7a4150b064594473e90c22d96ab6.js"></script><script src="data-parts/000149-36d84d08dd7dc2edd09c272159f4f961b274f88cd93c99249fbcfae2cd37b797.js"></script><script src="data-parts/000150-a703a3a00d3b7d5bbec0ad060398dadc8720b146228d6033a0e7ae157b8446cb.js"></script><script src="data-parts/000151-bef23891615e2523389d5b098579e1bad7ba34acd7b5ef929a38149a7220c819.js"></script><script src="data-parts/000152-153b5186f77d694fb87ccab7a23c019d17bc4a283656ca7b1a6dd709ab8a1ea9.js"></script><script src="data-parts/000153-4e23da00783b14cc69a162422eede37e817189919fcb03537b40c07abdee0af4.js"></script><script src="data-parts/000154-a5093f2e12591d4714cab94166a2a651368b6a86890184e24dfe4313e6129733.js"></script><script src="data-parts/000155-45b0b569d0db16cf425fb5a88c5aec206a8e1b0c6bce4835285362913b1100eb.js"></script><script src="data-parts/000156-7ed0e1c6160129c2e993b456ec1133e4e6a75590f7d587b7861687e9ea91c63e.js"></script><script src="data-parts/000157-879bb344a3d060798cacc894182bc88b1fed38fc5b55614ece7d769ea623fb29.js"></script><script src="data-parts/000158-f36dc59e9607158f07a54eac32cc73cfbb3bc46fa85ff180b4f45df6c5a6bf7e.js"></script><script src="data-parts/000159-7b4764b586d503195ae0273e9354675a085c6303cc8a2e2ff7137572a8845222.js"></script><script src="data-parts/000160-d80b3a4403b2cf83896b46242779e3b7f407882ece4d2b8126ac773e26e8c76f.js"></script><script src="data-parts/000161-baa6034f944e31f4604d1d8006270783a7ed8268220fa2e9f4c5a621f6df9380.js"></script><script src="data-parts/000162-60bbe4bf491f9bfc960e36dd42824ec59316e6990f843a3da259947a015939a7.js"></script><script src="data-parts/000163-89298e962024a5db66f367d2b6ffaec0fcfe723f43a96d30ee9f14eb1461df83.js"></script><script src="data-parts/000164-30b60f813f33740b69240eeb54bfd82b3a546b8bbd2184d08a14f782f9efbef7.js"></script><script src="data-parts/000165-ba93d7d8b57a99950030154a7dbac79a69fe4aa644b05dbfdbfa11d1063c3872.js"></script><script src="data-parts/000166-fa89ad13fe815cddae68938e27ba0ddd458a550b309b7aa2cbb51c779856dc21.js"></script><script src="data-parts/000167-4b7b670697a4bf57586f4d194984b3459327febbe71a803159e0668296379618.js"></script><script src="data-parts/000168-fdfd0992c6940e1a1df6be45e8dc0ccb6027d8704fae848ac9b11f19478309f6.js"></script><script src="data-parts/000169-ef9ffec214c5eadc8e058570cea75c1f55a740f47c6f5063cf20946b51fcf6f3.js"></script><script src="data-parts/000170-fd2e26734d854eca43669711cda26643fe5257d0e739a5d02cd1838ef3cf06ff.js"></script><script src="data-parts/000171-b57387f23b1dedf41448627baba065a741513314b531bef879530d46f32b71b2.js"></script><script src="data-parts/000172-2352fcf1324224139f75d2bc5ada5f8efca3e1c28401b2e891f91a592bc3fd26.js"></script><script src="data-parts/000173-5efa0e3bcdfa804763680a7a3e31d5e5bbf7094cf59731b9418eb4588939a2a6.js"></script><script src="data-parts/000174-2b0127645e9e010b344dae915ef6e029d92b2045ab7c074953232dd06d7aa339.js"></script><script src="data-parts/000175-60610b16a4c00e4bc0869898a9f9c93f2c3557a3c03bbb38896c5917dc229c41.js"></script><script src="data-parts/000176-cb22d4be805708f56ac50cfd92492eaa8276819ce7466898120c431b055b12c3.js"></script><script src="data-parts/000177-f1af28f496c4d7ede332b86ca1f9de137e2a29df378c95e2414f11db3c09fbbb.js"></script><script src="data-parts/000178-6a94835434f2683256b316e75d98860c2ea81c2387a232085bc9844845aebaba.js"></script><script src="data-parts/000179-b4d5e3f0a379005af66b5c7f2b8f57f62da65872c95131f50a70fd84d74aedbd.js"></script><script src="data-parts/000180-4d46e468bd057671ed877bc7c2d0950ff01b128d808b48b2169ae07522e43dbd.js"></script><script src="data-parts/000181-f000254ddee9898b018353a7c47b9fb406ae943c0a78bdc32ab4e31154f28edf.js"></script><script src="data-parts/000182-1a1cbb7f7284fc0dec562745879515973f745b96836c680efa03d7bfdc36813d.js"></script><script src="data-parts/000183-ff93bf6780835d23789ea294e7c44498bd43261a53cc9219a1b6ddf80d6068d1.js"></script><script src="data-parts/000184-465a140a3dd4b2fb224ce9b0eec12f076e54de3ed73a8ec16e58a957af59d298.js"></script><script src="data-parts/000185-f963634bccbd7e34f4f793ba130f79d5b9cc2ccfbb535fac274d90d088e19332.js"></script><script src="data-parts/000186-72524e59eac901f2df79097330f4b8d24fbbfa613c273cbd8bea5ed042d140f9.js"></script><script src="data-parts/000187-ca1ab5f825354d6385df8b3f52aec793150ff509405a89d13ce30172e5e389ec.js"></script><script src="data.js?v=1b295f5a2ca2"></script>
+  <script src="../../_assets/e50fe18299fa35ae46841ec0423e4a7ab102db1cfd055c82f3f11abb6dfee469.js"></script>
+  <script src="../../_assets/d3f4bbc4614c27f9701c1d1ae4ada400f9df05d7b70928384c0e1eef07b23a15.js"></script>
+  <script src="../../_assets/472548d5165fc856d11ae38ad78cebd7fc33aa2508990f616a8a44c752e36955.js"></script>
+  <script src="../../_assets/44a881fb5c2c23b61879d653f98ef1301cd37e4aeb24a37ad1df27ca126ef5a3.js"></script>
+  <script src="../../_assets/9faa6891261ff22b6a402a1710473764bb7678bf5c8e096bfdd5a2e77441ba64.js"></script>
+  <script src="../../_assets/08f6191b8ac2db78c834b7459852b0d4524a91b6b041f2eeb8612db3ba437f3c.js"></script>
+</body>
+</html>
